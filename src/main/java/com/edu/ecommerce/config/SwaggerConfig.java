@@ -19,7 +19,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(getApiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.educative.ecommerce"))
+                .apis(RequestHandlerSelectors.basePackage("com.edu.ecommerce"))
                 .paths(PathSelectors.any())
                 .build();
     }

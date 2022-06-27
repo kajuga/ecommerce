@@ -39,4 +39,22 @@ public class ProductController {
         productService.addProduct(productDto, category);
         return new ResponseEntity<>(new ApiResponse(true, "Product has been added"), HttpStatus.CREATED);
     }
+
+    @GetMapping("/")
+    public ResponseEntity<List<ProductDto>> getProducts() {
+        List<ProductDto> productDtos = productService.listProducts();
+        return new ResponseEntity<>(productDtos, HttpStatus.OK);
+    }
+
+    @PostMapping("/update/{productID}")
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable("productID") Integer productID,
+                                                     @RequestBody @Valid ProductDto productDto) {
+        Optional<Category> optionalCategory = categoryService.readCategory(productDto.getCategoryId());
+        if (!optionalCategory.isPresent()) {
+            return new ResponseEntity<ApiResponse>(new ApiResponse(false, "category is invalid"), HttpStatus.CONFLICT);
+        }
+        Category category = optionalCategory.get();
+        productService.updateProduct(productID, productDto, category);
+        return new ResponseEntity<>(new ApiResponse(true, "Product was updated"), HttpStatus.OK);
+    }
 }

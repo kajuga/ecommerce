@@ -7,6 +7,9 @@ import com.edu.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -26,5 +29,20 @@ public class ProductService {
         product.setPrice(productDto.getPrice());
         product.setName(productDto.getName());
         return product;
+    }
+
+    public List<ProductDto> listProducts() {
+        List<Product> products = productRepository.findAll();
+        List<ProductDto> productDtos = new ArrayList<>();
+        for (Product product: products) {
+            productDtos.add(new ProductDto(product));
+        }
+        return productDtos;
+    }
+
+    public void updateProduct(Integer productID, ProductDto productDto, Category category) {
+        Product product = getProductFromDto(productDto, category);
+        product.setId(productID);
+        productRepository.save(product);
     }
 }

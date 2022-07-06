@@ -1,8 +1,13 @@
 package com.edu.ecommerce.service;
 
+import com.edu.ecommerce.config.MessageStrings;
+import com.edu.ecommerce.dto.user.SignInDto;
+import com.edu.ecommerce.dto.user.SignInResponseDto;
 import com.edu.ecommerce.dto.user.SignUpResponseDto;
-import com.edu.ecommerce.dto.user.SignupDto;
+import com.edu.ecommerce.dto.user.SignUpDto;
+import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.exceptions.CustomException;
+import com.edu.ecommerce.model.AuthenticationToken;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.repository.UserRepository;
 import org.slf4j.Logger;
@@ -21,27 +26,35 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AuthenticationService authenticationService;
+
+
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public SignUpResponseDto signUp(SignupDto signupDto)  throws CustomException {
+    public SignUpResponseDto signUp(SignUpDto signUpDto)  throws CustomException {
         // Check to see if the current email address has already been registered.
-        if (Objects.nonNull(userRepository.findByEmail(signupDto.getEmail()))) {
+        if (Objects.nonNull(userRepository.findByEmail(signUpDto.getEmail()))) {
             // If the email address has been registered then throw an exception.
             throw new CustomException("User already exists");
         }
         // first encrypt the password
-        String encryptedPassword = signupDto.getPassword();
+        String encryptedPassword = signUpDto.getPassword();
         try {
-            encryptedPassword = hashPassword(signupDto.getPassword());
+            encryptedPassword = hashPassword(signUpDto.getPassword());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             logger.error("hashing password failed {}", e.getMessage());
         }
 
-        User user = new User(signupDto.getFirstName(), signupDto.getLastName(), signupDto.getEmail(), encryptedPassword );
+        User user = new User(signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getEmail(), encryptedPassword );
         try {
             // save the User
             userRepository.save(user);
+            // generate token for user
+            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
+            // save token in database
+            authenticationService.saveConfirmationToken(authenticationToken);
             // success in creating
             return new SignUpResponseDto("success", "user created successfully");
         } catch (Exception e) {
@@ -49,7 +62,6 @@ public class UserService {
             throw new CustomException(e.getMessage());
         }
     }
-
 
     String hashPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
@@ -60,4 +72,31 @@ public class UserService {
         return myHash;
     }
 
+    public SignInResponseDto signIn(SignInDto signInDto) throws AuthenticationFailException, CustomException {
+        // first find User by email
+        User user = userRepository.findByEmail(signInDto.getEmail());
+        if(!Objects.nonNull(user)){
+            throw new AuthenticationFailException("user not present");
+        }
+        try {
+            // check if password is right
+            if (!user.getPassword().equals(hashPassword(signInDto.getPassword()))){
+                // passwords do not match
+                throw  new AuthenticationFailException(MessageStrings.WRONG_PASSWORD);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            logger.error("hashing password failed {}", e.getMessage());
+            throw new CustomException(e.getMessage());
+        }
+
+        AuthenticationToken token = authenticationService.getToken(user);
+
+        if(!Objects.nonNull(token)) {
+            // token not present
+            throw new CustomException(MessageStrings.AUTH_TOEKN_NOT_PRESENT);
+        }
+
+        return new SignInResponseDto ("success", token.getToken());
+    }
 }

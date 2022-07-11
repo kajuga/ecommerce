@@ -1,7 +1,7 @@
 package com.edu.ecommerce.dto.user;
 
 
-public class SignupDto {
+public class SignUpDto {
     private String firstName;
     private String lastName;
     private String email;

@@ -70,4 +70,31 @@ public class OrderController {
 
         return new ResponseEntity<>(orderDtoList, HttpStatus.OK);
     }
+
+
+    // get orderitems for an order
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getOrderById(@PathVariable("id") Integer id, @RequestParam("token") String token)
+            throws AuthenticationFailException, OrderNotFoundException {
+        // 1. validate token
+
+        // validate token
+        authenticationService.authenticate(token);
+
+        // 2. find user
+
+        // retrieve user
+        User user = authenticationService.getUser(token);
+
+
+        // 3. call getOrder method of order service an pass orderId and user
+
+        Order order = orderService.getOrder(id, user);
+
+        // 4. display order in json response
+
+        return new ResponseEntity<>(order, HttpStatus.OK);
+
+    }
+
 }

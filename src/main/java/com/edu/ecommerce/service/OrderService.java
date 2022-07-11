@@ -127,5 +127,31 @@ public class OrderService {
     public List<Order> listOrders(User user) {
         return orderRepository.findAllByUserOrderByCreatedDateDesc(user);
     }
+
+    // find the order by id, validate if the order belong to user and return
+    public Order getOrder(Integer orderId, User user) throws OrderNotFoundException {
+        // 1. validate the order
+        // if the order not valid throw exception
+
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+
+        if (optionalOrder.isEmpty()) {
+            /// throw exception
+            throw  new OrderNotFoundException("order id is not valid");
+        }
+
+        // check if the order belongs to user
+
+        Order order = optionalOrder.get();
+
+        if(order.getUser() != user) {
+            // else throw OrderNotFoundException
+            throw  new OrderNotFoundException("order does not belong to user");
+        }
+
+        // return the order
+
+        return  order;
+    }
 }
 

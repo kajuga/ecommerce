@@ -1,5 +1,6 @@
 package com.edu.ecommerce.service;
 
+
 import com.edu.ecommerce.config.MessageStrings;
 import com.edu.ecommerce.dto.user.SignInDto;
 import com.edu.ecommerce.dto.user.SignInResponseDto;
@@ -32,22 +33,22 @@ public class UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public SignUpResponseDto signUp(SignUpDto signUpDto)  throws CustomException {
+    public SignUpResponseDto signUp(SignUpDto signupDto)  throws CustomException {
         // Check to see if the current email address has already been registered.
-        if (Objects.nonNull(userRepository.findByEmail(signUpDto.getEmail()))) {
+        if (Objects.nonNull(userRepository.findByEmail(signupDto.getEmail()))) {
             // If the email address has been registered then throw an exception.
             throw new CustomException("User already exists");
         }
         // first encrypt the password
-        String encryptedPassword = signUpDto.getPassword();
+        String encryptedPassword = signupDto.getPassword();
         try {
-            encryptedPassword = hashPassword(signUpDto.getPassword());
+            encryptedPassword = hashPassword(signupDto.getPassword());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             logger.error("hashing password failed {}", e.getMessage());
         }
 
-        User user = new User(signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getEmail(), encryptedPassword );
+        User user = new User(signupDto.getFirstName(), signupDto.getLastName(), signupDto.getEmail(), encryptedPassword );
         try {
             // save the User
             userRepository.save(user);

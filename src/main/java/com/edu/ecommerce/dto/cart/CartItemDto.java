@@ -7,9 +7,11 @@ import com.edu.ecommerce.model.Product;
 import javax.validation.constraints.NotNull;
 
 public class CartItemDto {
+
     private Integer id;
     private @NotNull Integer quantity;
     private @NotNull Product product;
+
 
     public Integer getId() {
         return id;

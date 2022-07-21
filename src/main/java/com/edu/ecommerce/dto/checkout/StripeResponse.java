@@ -1,6 +1,7 @@
 package com.edu.ecommerce.dto.checkout;
 
 public class StripeResponse {
+
     private String sessionId;
 
     public String getSessionId() {
@@ -17,4 +18,5 @@ public class StripeResponse {
 
     public StripeResponse() {
     }
+
 }

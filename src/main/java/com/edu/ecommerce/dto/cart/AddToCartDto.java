@@ -8,8 +8,7 @@ public class AddToCartDto {
     private @NotNull Integer quantity;
 
 
-    public AddToCartDto() {
-    }
+    public AddToCartDto() {}
 
     @Override
     public String toString() {

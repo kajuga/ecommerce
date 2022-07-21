@@ -1,7 +1,6 @@
 package com.edu.ecommerce.dto.product;
 
 import com.edu.ecommerce.model.Product;
-
 import javax.validation.constraints.NotNull;
 
 public class ProductDto {
@@ -30,8 +29,7 @@ public class ProductDto {
         this.setCategoryId(product.getCategory().getId());
     }
 
-    public ProductDto() {
-    }
+    public ProductDto() {}
 
     public Integer getId() {
         return id;
@@ -80,4 +78,5 @@ public class ProductDto {
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
     }
+
 }

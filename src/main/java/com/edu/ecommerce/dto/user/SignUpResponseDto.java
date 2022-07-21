@@ -1,6 +1,7 @@
 package com.edu.ecommerce.dto.user;
 
 public class SignUpResponseDto {
+
     private String status;
     private String message;
 
@@ -24,4 +25,5 @@ public class SignUpResponseDto {
         this.status = status;
         this.message = message;
     }
+
 }

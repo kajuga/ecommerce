@@ -19,7 +19,6 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private @NotNull String name;
     private @NotNull String imageURL;
     private @NotNull double price;
@@ -29,7 +28,6 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     Category category;
-
 
     public Product(String name, String imageURL, double price, String description, Category category) {
         super();

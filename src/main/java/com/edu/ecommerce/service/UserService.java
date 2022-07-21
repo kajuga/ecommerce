@@ -30,7 +30,6 @@ public class UserService {
     @Autowired
     AuthenticationService authenticationService;
 
-
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public SignUpResponseDto signUp(SignUpDto signupDto)  throws CustomException {
@@ -92,7 +91,6 @@ public class UserService {
         }
 
         AuthenticationToken token = authenticationService.getToken(user);
-
         if(!Objects.nonNull(token)) {
             // token not present
             throw new CustomException(MessageStrings.AUTH_TOEKN_NOT_PRESENT);

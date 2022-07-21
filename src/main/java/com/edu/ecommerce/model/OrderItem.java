@@ -50,7 +50,6 @@ public class OrderItem {
         this.product = product;
     }
 
-
     public int getQuantity() {
         return quantity;
     }

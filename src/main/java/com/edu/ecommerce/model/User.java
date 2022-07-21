@@ -58,7 +58,6 @@ public class User {
         this.email = email;
     }
 
-
     public String getPassword() {
         return password;
     }
@@ -76,5 +75,4 @@ public class User {
 
     public User() {
     }
-
 }

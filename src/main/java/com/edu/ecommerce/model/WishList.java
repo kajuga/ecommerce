@@ -16,7 +16,6 @@ import java.util.Date;
 @Table(name = "wishlist")
 public class WishList {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -34,7 +33,6 @@ public class WishList {
 
     public WishList() {
     }
-
 
     public WishList(User user, Product product) {
         this.user = user;

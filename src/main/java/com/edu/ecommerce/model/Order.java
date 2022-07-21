@@ -3,7 +3,6 @@ package com.edu.ecommerce.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +49,6 @@ public class Order {
     public void setId(Integer id) {
         this.id = id;
     }
-
 
     public Date getCreatedDate() {
         return createdDate;

@@ -68,7 +68,6 @@ public class AuthenticationToken {
         this.user = user;
     }
 
-
     public AuthenticationToken() {
     }
 }

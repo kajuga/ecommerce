@@ -21,12 +21,12 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/signup")
-    public SignUpResponseDto Signup(@RequestBody SignUpDto signUpDto) throws CustomException {
+    public SignUpResponseDto SignUp(@RequestBody SignUpDto signUpDto) throws CustomException {
         return userService.signUp(signUpDto);
     }
 
-    @PostMapping("/signIn")
-    public SignInResponseDto Signup(@RequestBody SignInDto signInDto) throws CustomException, AuthenticationFailException {
+    @PostMapping("/signin")
+    public SignInResponseDto SignIn(@RequestBody SignInDto signInDto) throws CustomException, AuthenticationFailException {
         return userService.signIn(signInDto);
     }
 

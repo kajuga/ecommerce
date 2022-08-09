@@ -1,33 +1,167 @@
 package com.edu.ecommerce.controllers;
 
-import com.edu.ecommerce.dto.user.SignInDto;
-import com.edu.ecommerce.dto.user.SignInResponseDto;
-import com.edu.ecommerce.dto.user.SignUpDto;
-import com.edu.ecommerce.exceptions.AuthenticationFailException;
-import com.edu.ecommerce.exceptions.CustomException;
-import com.edu.ecommerce.dto.user.SignUpResponseDto;
-import com.edu.ecommerce.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.edu.ecommerce.dto.role.RoleDto;
+import com.edu.ecommerce.dto.user.UserDto;
+import com.edu.ecommerce.mapper.UserMapper;
+import com.edu.ecommerce.model.Role;
+import com.edu.ecommerce.model.UserRole;
+import com.edu.ecommerce.security.AccessRole;
+import com.edu.ecommerce.security.UserPrincipal;
+import com.edu.ecommerce.service.interfaces.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
-@RequestMapping("user")
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
+@RequestMapping(path = "/users")
+@RequiredArgsConstructor
+@CrossOrigin
+@AccessRole({Role.MANAGER, Role.ADMINISTRATOR, Role.SPECIALIST})
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final UserMapper userMapper;
+    private final MapperFacade mapperFacade;
 
-    @PostMapping("/signup")
-    public SignUpResponseDto SignUp(@RequestBody SignUpDto signUpDto) throws CustomException {
-        return userService.signUp(signUpDto);
+
+    @GetMapping
+    @ApiOperation(value = "Get all users")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get all users"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<List<UserDto>> findAllUsers() {
+        var userDtos = userService.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+        return ResponseEntity.ok(userDtos);
     }
 
-    @PostMapping("/signin")
-    public SignInResponseDto SignIn(@RequestBody SignInDto signInDto) throws CustomException, AuthenticationFailException {
-        return userService.signIn(signInDto);
+    @GetMapping("/external")
+    @ApiOperation(value = "Get all external users")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get all external users"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<List<UserDto>> findAllExternalUsers() {
+        var allExternalUsers = userService.getAllExternalUsers();
+        var collect = allExternalUsers.stream().map(userMapper::toDto).collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
+    }
+
+    @GetMapping("/user-role/{roleId}")
+    @ApiOperation(value = "Get all users by user role")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get all users"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<List<UserDto>> findAllExternalUsersByExternalTypeId(@NotNull @PathVariable("roleId") Long id) {
+        var allUsersByRoleId = userService.getAllUsersByRoleId(id);
+        var collect = allUsersByRoleId.stream().map(userMapper::toDto).collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
+    }
+
+
+
+    @GetMapping(path = "/{id}")
+    @ApiOperation(value = "Get user by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get user"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<UserDto> findUserById(@NotNull @PathVariable("id") Long id) {
+
+        var user = userService.findById(id);
+        return ResponseEntity.ok(userMapper.toDto(user));
+    }
+
+    @GetMapping(path = "/current")
+    @ApiOperation(value = "Get current user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get user"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<UserDto> findCurrentUser(@ApiIgnore @AuthenticationPrincipal UserPrincipal userPrincipal) {
+
+        var user = userService.findById(userPrincipal.getId());
+        return ResponseEntity.ok(userMapper.toDto(user));
+    }
+
+    @GetMapping(path = "/{id}/role")
+    @ApiOperation(value = "Get user role by user id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get user roles"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<RoleDto> findUserRoleByUserId(@NotNull @PathVariable("id") Long id) {
+
+        var user = userService.findById(id);
+        UserRole userRole = user.getUserRole();
+        return ResponseEntity.ok(mapperFacade.map(userRole, RoleDto.class));
+    }
+
+    @PostMapping
+    @ApiOperation(value = "Create user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully create user"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+
+        var user = userService.create(userMapper.fromDto(userDto));
+        return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/{id}")
+    @ApiOperation(value = "Update user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully update user"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<UserDto> updateUser(@NotNull @PathVariable("id") Long id, @Valid @RequestBody UserDto userDto) {
+
+        var user = userService.update(id, userMapper.fromDto(userDto));
+        return ResponseEntity.ok(userMapper.toDto(user));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ApiOperation(value = "Delete user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully change the status to removed for user"),
+            @ApiResponse(code = 204, message = "No Content"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<Void> delete(@NotNull @PathVariable("id") Long id) {
+            userService.delete(id);
+            return ResponseEntity.ok().build();
     }
 
 }

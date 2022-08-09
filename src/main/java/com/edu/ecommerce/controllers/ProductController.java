@@ -5,6 +5,8 @@ import com.edu.ecommerce.dto.product.ProductDto;
 import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.service.CategoryService;
 import com.edu.ecommerce.service.ProductService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,12 +43,14 @@ public class ProductController {
     }
 
     @GetMapping("/")
+    @ApiOperation(value = "Get all products")
     public ResponseEntity<List<ProductDto>> getProducts() {
         List<ProductDto> productDtos = productService.listProducts();
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
     @PostMapping("/update/{productID}")
+    @ApiOperation(value = "Update product by Id")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable("productID") Integer productID,
                                                      @RequestBody @Valid ProductDto productDto) {
         Optional<Category> optionalCategory = categoryService.readCategory(productDto.getCategoryId());

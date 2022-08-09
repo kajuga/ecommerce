@@ -8,7 +8,6 @@ INSERT INTO ecommerce_v2.categories (category_name, description, image_url) VALU
 INSERT INTO ecommerce_v2.categories (category_name, description, image_url) VALUES ('Food', 'Food in our store', 'http://localhost:8080/pictures/category/food.png');
 
 -- products
-
 INSERT INTO ecommerce_v2.products (description, imageurl, name, price, category_id) VALUES ('Красный автомобиль', 'http://localhost:8080/pictures/product/car_1.png', 'Red vehicle', 1500, 1);
 INSERT INTO ecommerce_v2.products (description, imageurl, name, price, category_id) VALUES ('Зеленый автомобиль', 'http://localhost:8080/pictures/product/car_2.png', 'Green vehicle', 3200, 1);
 INSERT INTO ecommerce_v2.products (description, imageurl, name, price, category_id) VALUES ('Синий автомобиль', 'http://localhost:8080/pictures/product/car_3.png', 'Blue vehicle', 4500, 1);
@@ -29,10 +28,22 @@ INSERT INTO ecommerce_v2.products (description, imageurl, name, price, category_
 INSERT INTO ecommerce_v2.products (description, imageurl, name, price, category_id) VALUES ('3,5 kg', 'http://localhost:8080/pictures/product/food_3.png', 'Green melone', 7, 6);
 INSERT INTO ecommerce_v2.products (description, imageurl, name, price, category_id) VALUES ('4,3", 3 RAM', 'http://localhost:8080/pictures/product/phone_3.jpg', 'Apple Iphone mini', 555, 3);
 
--- users
+-- user roles
+INSERT INTO ecommerce_v2.user_role (role_name, description) value('ADMINISTRATOR','Department Manager - administrator');
+INSERT INTO ecommerce_v2.user_role (role_name, description) value('MANAGER', 'Department Chief');
+INSERT INTO ecommerce_v2.user_role (role_name, description) value('SPECIALIST', 'Department Manager');
+INSERT INTO ecommerce_v2.user_role (role_name, description) value ('EXTERNAL_USER', 'External user');
 
-INSERT INTO ecommerce_v2.users (email, first_name, last_name, password) VALUES ('sashok@mail.ru', 'Aleksandr', 'Fedorov', '698D51A19D8A121CE581499D7B701668');
+-- users
+INSERT INTO ecommerce_v2.user (first_name, last_name, email, role_id)
+values ('User', 'System', 'admin@mail.ru', 1000);
+INSERT INTO ecommerce_v2.user (first_name, last_name, email, role_id)
+values ('Ivan', 'Ivanov', 'ivanov@mail.ru', 1001);
+INSERT INTO ecommerce_v2.user (first_name, last_name, email, role_id)
+values ('Petr', 'Petrov', 'petrov@mail.ru', 1002);
+INSERT INTO ecommerce_v2.user (first_name, last_name, email, role_id)
+values ('Sergey', 'Sergeev', 'sergeev@mail.ru', 1003);
+
 
 -- wishlist
-
-INSERT INTO ecommerce_v2.wishlist (created_date, product_id, user_id) VALUES ('2022-07-12 18:00:15.480000', 19, 1);
+# INSERT INTO ecommerce_v2.wishlist (created_date, product_id, user_id) VALUES ('2022-07-12 18:00:15.480000', 19, 1);

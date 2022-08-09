@@ -1,7 +1,7 @@
 package com.edu.ecommerce.service;
 
 
-import com.edu.ecommerce.config.MessageStrings;
+import com.edu.ecommerce.configuration.MessageStrings;
 import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.model.AuthenticationToken;
 import com.edu.ecommerce.model.User;
@@ -27,7 +27,7 @@ public class AuthenticationService {
         return repository.findTokenByUser(user);
     }
 
-    // get Uer from the token
+    // get User from the token
     public User getUser(String token) {
         AuthenticationToken authenticationToken = repository.findTokenByToken(token);
         if (Objects.nonNull(authenticationToken)) {
@@ -41,10 +41,10 @@ public class AuthenticationService {
     // check if the token is valid
     public void authenticate(String token) throws AuthenticationFailException {
         if (!Objects.nonNull(token)) {
-            throw new AuthenticationFailException(MessageStrings.AUTH_TOEKN_NOT_PRESENT);
+            throw new AuthenticationFailException(MessageStrings.AUTH_TOKEN_NOT_PRESENT);
         }
         if (!Objects.nonNull(getUser(token))) {
-            throw new AuthenticationFailException(MessageStrings.AUTH_TOEKN_NOT_VALID);
+            throw new AuthenticationFailException(MessageStrings.AUTH_TOKEN_NOT_VALID);
         }
     }
 }

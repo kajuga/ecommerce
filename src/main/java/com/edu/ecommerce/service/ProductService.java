@@ -6,18 +6,22 @@ import com.edu.ecommerce.exceptions.ProductNotExistException;
 import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.edu.ecommerce.security.AuthenticatedUser;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    @Autowired
     private ProductRepository productRepository;
+    private final AuthenticatedUser authenticatedUser;
 
     public List<ProductDto> listProducts() {
         List<Product> products = productRepository.findAll();
@@ -57,7 +61,6 @@ public class ProductService {
             throw new ProductNotExistException("Product id is invalid " + productId);
         return optionalProduct.get();
     }
-
 
 
 }

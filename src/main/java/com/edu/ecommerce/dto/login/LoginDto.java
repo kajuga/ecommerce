@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginDto {
 
-    @ApiModelProperty(value = "email", example = "huntflow-test-16@andersenlab.com")
+    @ApiModelProperty(value = "email", example = "admin@mail.ru")
     @NotNull(message = "Email is mandatory.")
     @Size(message = "Email must be from 1 to 255 characters.", min = 1)
     private String email;

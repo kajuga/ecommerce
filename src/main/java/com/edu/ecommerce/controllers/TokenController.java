@@ -1,6 +1,7 @@
 package com.edu.ecommerce.controllers;
 
 import com.edu.ecommerce.dto.login.LoginDto;
+import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.model.JwtToken;
 import com.edu.ecommerce.model.Login;
 import com.edu.ecommerce.service.interfaces.TokenService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping(value = "/")
@@ -28,7 +30,7 @@ public class TokenController {
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
     })
-    public ResponseEntity<JwtToken> getToken(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<JwtToken> getToken(@Valid @RequestBody LoginDto loginDto) throws AuthenticationFailException, NoSuchAlgorithmException {
         return ResponseEntity.ok(tokenService.createToken(fromDto(loginDto)));
 
     }

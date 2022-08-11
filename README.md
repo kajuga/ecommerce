@@ -21,6 +21,6 @@
 -Dsecret.key=o1JRppeF1JlCPQEunPd8Da7W3Yx4zK1o2XKY38LHe87NKmTejYL8ITdeephSfYTbf6Gw8cyQBeab6am71-pPRTqWxO4Qeg3IPcELwAQFaS0UwPjb_I8G7NYNWugl8Si867OdUkEK8FZL4zI3BOFSnVO8cZr8bj_yOiFr2PoKjcHTaKXzslQhI-MEZlWhd7ucCLGkgtWRZg1gg69JjVTYtRGebeByCaHrKarAFOzwSs4D05BrbdHfQBbknWGs8q3MqRjF2xJH_9QTh1UqC2TcNDQG3moiq209WiTBg2kBcbFBPAUr6dk1_oR_oZeU2QOa0hJfULDSmLy49Lod9P0mSQ
 
 
-Токен для авторизации -  CRM_HA + "полученный токен" (через пробел)
+*Токен для авторизации -  CRM_HA + "сгенерированный токен" (через пробел)
 
 

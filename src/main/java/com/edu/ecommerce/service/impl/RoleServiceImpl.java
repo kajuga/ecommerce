@@ -2,6 +2,7 @@ package com.edu.ecommerce.service.impl;
 
 import com.edu.ecommerce.exceptions.CrmException;
 import com.edu.ecommerce.exceptions.ResourceNotFoundException;
+import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.model.UserRole;
 import com.edu.ecommerce.repository.RoleRepository;
 import com.edu.ecommerce.service.interfaces.RoleService;
@@ -45,9 +46,8 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true)
     @Override
     public UserRole findByUserEmail(String email) {
-//        User user = userService.findByEmail(email);
-//        return user.getUserRole();
-        return new UserRole();
+        User user = userService.findByEmail(email);
+        return user.getUserRole();
     }
 
     @Transactional(readOnly = true)

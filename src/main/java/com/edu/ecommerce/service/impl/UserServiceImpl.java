@@ -96,7 +96,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public User findByEmail(String email) {
-
         return userRepository.findByEmail(email)
                 .filter(v -> !v.isEmpty())
                 .map(v -> v.get(0))

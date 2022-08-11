@@ -14,6 +14,9 @@ databaseChangeLog:
             dbms: mysql
             encoding: utf8
             path: db/migrations/changes/V250722175821_fill_database_structure.sql
-
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migrations/changes/V090822161845_add_column_password_in_table_user.sql
 
 

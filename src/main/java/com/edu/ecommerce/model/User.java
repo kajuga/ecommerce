@@ -24,6 +24,9 @@ public class User {
     @Column(name = "email", length = 55, nullable = false)
     private String email;
 
+    @Column(name = "password")
+    private String password;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private UserRole userRole;

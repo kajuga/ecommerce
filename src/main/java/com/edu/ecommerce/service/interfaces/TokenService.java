@@ -1,8 +1,11 @@
 package com.edu.ecommerce.service.interfaces;
 
+import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.model.JwtToken;
 import com.edu.ecommerce.model.Login;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.security.NoSuchAlgorithmException;
 
 public interface TokenService {
 
@@ -12,7 +15,7 @@ public interface TokenService {
      * @param user user's credentials
      * @return token
      */
-    JwtToken createToken(Login user);
+    JwtToken createToken(Login user) throws AuthenticationFailException, NoSuchAlgorithmException;
 
     /**
      * Get userDetails by token

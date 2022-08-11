@@ -1,5 +1,7 @@
 package com.edu.ecommerce.service.impl;
 
+import com.edu.ecommerce.configuration.MessageStrings;
+import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.model.JwtToken;
 import com.edu.ecommerce.model.Login;
 import com.edu.ecommerce.model.User;
@@ -17,6 +19,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -45,7 +50,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public JwtToken createToken(Login login) {
+    public JwtToken createToken(Login login) throws AuthenticationFailException, NoSuchAlgorithmException {
         var user = authentication(login);
 
         var role = roleService.findByUserEmail(user.getEmail());
@@ -76,9 +81,14 @@ public class TokenServiceImpl implements TokenService {
 
 
 
-    private User authentication(Login login) {
+    private User authentication(Login login) throws AuthenticationFailException, NoSuchAlgorithmException {
         var user = userService.findByEmail(login.getEmail());
-        //TODO password check
+        if(!Objects.nonNull(user)){
+            throw new AuthenticationFailException("user not present");
+        }
+        if (!user.getPassword().equals(hashPassword(login.getPassword()))) {
+             throw new AuthenticationFailException(MessageStrings.WRONG_PASSWORD);
+            }
         return user;
     }
 
@@ -121,4 +131,15 @@ public class TokenServiceImpl implements TokenService {
 
         return new JwtToken(jwtBuilder.compact(), "Bearer", Duration.between(issuedDateInstant, expirationDateInstant).toSeconds(), role, uid);
     }
+
+
+    String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(password.getBytes());
+        byte[] digest = md.digest();
+        String myHash = DatatypeConverter
+                .printHexBinary(digest).toUpperCase();
+        return myHash;
+    }
+
 }

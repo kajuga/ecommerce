@@ -36,7 +36,7 @@ create table user
     last_name varchar(255) null,
     email varchar(255) null,
     role_id BIGINT(20) DEFAULT NULL,
-    UNIQUE KEY FK_user_role_id (role_id),
+    KEY FK_user_role_id (role_id),
     CONSTRAINT FK_user_role_id FOREIGN KEY (role_id) REFERENCES user_role (id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 70000

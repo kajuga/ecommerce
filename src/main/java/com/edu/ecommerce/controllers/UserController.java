@@ -102,7 +102,6 @@ public class UserController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<UserDto> findCurrentUser(@ApiIgnore @AuthenticationPrincipal UserPrincipal userPrincipal) {
-
         var user = userService.findById(userPrincipal.getId());
         return ResponseEntity.ok(userMapper.toDto(user));
     }

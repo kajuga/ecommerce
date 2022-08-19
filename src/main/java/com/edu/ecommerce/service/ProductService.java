@@ -48,14 +48,14 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void updateProduct(Integer productID, ProductDto productDto, Category category) {
+    public void updateProduct(Long productID, ProductDto productDto, Category category) {
         Product product = getProductFromDto(productDto, category);
         product.setId(productID);
         productRepository.save(product);
     }
 
 
-    public Product getProductById(Integer productId) throws ProductNotExistException {
+    public Product getProductById(Long productId) throws ProductNotExistException {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (!optionalProduct.isPresent())
             throw new ProductNotExistException("Product id is invalid " + productId);

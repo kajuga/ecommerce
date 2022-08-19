@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class AddToCartDto {
     private Integer id;
-    private @NotNull Integer productId;
+    private @NotNull Long productId;
     private @NotNull Integer quantity;
 
 
@@ -27,11 +27,11 @@ public class AddToCartDto {
         this.id = id;
     }
 
-    public Integer getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

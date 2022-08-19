@@ -43,7 +43,7 @@ public class UserDto {
     @Size(message = "password must be from 8 to 10 characters.At least One Upper and Lower Case Character, At least one digit, At least one symbol/special character @$!%*#?&^_-", min = 8, max = 10)
     @Pattern(regexp = "[(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8,10}]+",
             message = "Password can contain only english letters, digits and special symbols")
-    @ApiModelProperty(hidden = true)
+//    @ApiModelProperty(hidden = true)
     private String password;
 
     @Size(message = "RoleId must be from 4 characters.", min = 4, max = 4)

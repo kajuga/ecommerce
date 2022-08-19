@@ -37,7 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger",
             "/webjars/**",
             "/login",
-            "/secret_login"
+            "/secret_login",
+            "/signUp"
     };
 
     private final TokenAuthenticationEntryPoint tokenAuthenticationEntryPoint;

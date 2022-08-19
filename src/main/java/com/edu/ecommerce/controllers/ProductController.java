@@ -51,7 +51,7 @@ public class ProductController {
 
     @PostMapping("/update/{productID}")
     @ApiOperation(value = "Update product by Id")
-    public ResponseEntity<ApiResponse> updateProduct(@PathVariable("productID") Integer productID,
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable("productID") Long productID,
                                                      @RequestBody @Valid ProductDto productDto) {
         Optional<Category> optionalCategory = categoryService.readCategory(productDto.getCategoryId());
         if (!optionalCategory.isPresent()) {

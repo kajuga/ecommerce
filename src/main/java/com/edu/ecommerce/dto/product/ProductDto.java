@@ -1,24 +1,40 @@
 package com.edu.ecommerce.dto.product;
 
 import com.edu.ecommerce.model.Product;
-import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductDto {
 
-    private Integer id;
-    private @NotNull String name;
-    private @NotNull String imageURL;
-    private @NotNull double price;
-    private @NotNull String description;
-    private @NotNull Integer categoryId;
+    @ApiModelProperty(hidden = true)
+    private Long id;
 
-    public ProductDto(@NotNull String name, @NotNull String imageURL, @NotNull double price, @NotNull String description, @NotNull Integer categoryId) {
-        this.name = name;
-        this.imageURL = imageURL;
-        this.price = price;
-        this.description = description;
-        this.categoryId = categoryId;
-    }
+    private String name;
+    private String imageURL;
+    private double price;
+    private String description;
+
+    @Size(message = "CategoryId must be from 4 characters.", min = 4, max = 4)
+    @Pattern(regexp = "[(?=.*\\d).{4}]+",
+            message = "CategoryId can contain only digits")
+    private Long categoryId;
+
 
     public ProductDto(Product product) {
         this.setId(product.getId());
@@ -28,55 +44,4 @@ public class ProductDto {
         this.setPrice(product.getPrice());
         this.setCategoryId(product.getCategory().getId());
     }
-
-    public ProductDto() {}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
 }

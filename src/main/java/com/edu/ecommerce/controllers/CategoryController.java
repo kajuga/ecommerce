@@ -36,7 +36,7 @@ public class CategoryController {
     }
 
     @PostMapping("/update/{categoryID}")
-    public ResponseEntity<ApiResponse> updateCategory(@PathVariable("categoryID") Integer categoryID, @Valid @RequestBody Category category) {
+    public ResponseEntity<ApiResponse> updateCategory(@PathVariable("categoryID") Long categoryID, @Valid @RequestBody Category category) {
         // Check to see if the category exists.
         if (Objects.nonNull(categoryService.readCategory(categoryID))) {
             // If the category exists then update it.

@@ -78,6 +78,13 @@ public class UserServiceImpl implements UserService {
     public User update(Long id, User requestUser) {
         User userById = findById(id);
         checkUpdateAccess(userById, requestUser);
+        String encryptedPassword = requestUser.getPassword();
+        try {
+            encryptedPassword = hashPassword(requestUser.getPassword());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        requestUser.setPassword(encryptedPassword);
         dataService.copyNonNullProperties(requestUser, userById);
         return userRepository.save(userById);
     }

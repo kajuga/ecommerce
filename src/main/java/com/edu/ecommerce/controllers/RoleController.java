@@ -45,7 +45,7 @@ public class RoleController {
 
     @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
     @GetMapping(path = "/{id}")
-    @ApiOperation(value = "Get user role by id", response = RoleDto.class)
+    @ApiOperation(value = "Get user's role by role id", response = RoleDto.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully get user roles by id"),
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
@@ -57,7 +57,7 @@ public class RoleController {
         return ResponseEntity.ok(mapper.map(roleById, RoleDto.class));
     }
 
-
+    @AccessRole(value = {Role.MANAGER, Role.SPECIALIST})
     @PostMapping
     @ApiOperation(value = "Create role", response = RoleDto.class)
     @ApiResponses(value = {
@@ -71,6 +71,7 @@ public class RoleController {
         return new ResponseEntity<>(mapper.map(userRole, RoleDto.class), HttpStatus.CREATED);
     }
 
+    @AccessRole(value = {Role.MANAGER, Role.SPECIALIST})
     @PutMapping(path = "/{id}")
     @ApiOperation(value = "Update user role", response = RoleDto.class)
     @ApiResponses(value = {
@@ -86,6 +87,7 @@ public class RoleController {
                 .map(updatedUserRole, RoleDto.class));
     }
 
+    @AccessRole(value = {Role.MANAGER, Role.SPECIALIST})
     @DeleteMapping(path = "/{id}")
     @ApiOperation(value = "Delete user role")
     @ApiResponses(value = {

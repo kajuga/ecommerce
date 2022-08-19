@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @CrossOrigin
+@Slf4j
 @AccessRole({Role.MANAGER, Role.ADMINISTRATOR, Role.SPECIALIST})
 public class UserController {
 
@@ -45,6 +48,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<List<UserDto>> findAllUsers() {
+        log.info("Find all user");
         var userDtos = userService.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(userDtos);
     }
@@ -130,7 +134,6 @@ public class UserController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-
         var user = userService.create(userMapper.fromDto(userDto));
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.CREATED);
     }
@@ -144,7 +147,7 @@ public class UserController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<UserDto> updateUser(@NotNull @PathVariable("id") Long id, @Valid @RequestBody UserDto userDto) {
-
+//TODO исправить запись в БД и возврат незахешированного пароля
         var user = userService.update(id, userMapper.fromDto(userDto));
         return ResponseEntity.ok(userMapper.toDto(user));
     }

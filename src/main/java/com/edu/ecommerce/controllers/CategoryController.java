@@ -1,49 +1,62 @@
 package com.edu.ecommerce.controllers;
 
-import com.edu.ecommerce.common.ApiResponse;
-import com.edu.ecommerce.model.Category;
-import com.edu.ecommerce.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.edu.ecommerce.dto.category.CategoryDto;
+import com.edu.ecommerce.mapper.CategoryMapper;
+import com.edu.ecommerce.model.Role;
+import com.edu.ecommerce.security.AccessRole;
+import com.edu.ecommerce.service.interfaces.CategoryService;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
+
 
 @RestController
 @RequestMapping("/category")
-
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@AccessRole(value = Role.ADMINISTRATOR)
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final MapperFacade mapper;
+    private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
-    @GetMapping("/")
-    public ResponseEntity<List<Category>> getCategories() {
-        List<Category> body = categoryService.listCategories();
-        return new ResponseEntity<>(body, HttpStatus.OK);
+
+    @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
+    @GetMapping
+    @ApiOperation(value = "Get all categories", response = CategoryDto.class, responseContainer = "List")
+    public ResponseEntity<List<CategoryDto>> getCategories() {
+        var categoryList = categoryService.findAll();
+        return ResponseEntity.ok(mapper.mapAsList(categoryList, CategoryDto.class));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createCategory(@Valid @RequestBody Category category) {
-        if (Objects.nonNull(categoryService.readCategory(category.getCategoryName()))) {
-            return new ResponseEntity<ApiResponse>(new ApiResponse(false, "category already exists"), HttpStatus.CONFLICT);
-        }
-        categoryService.createCategory(category);
-        return new ResponseEntity<>(new ApiResponse(true, "created the category"), HttpStatus.CREATED);
+    @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
+    @PostMapping
+    @ApiOperation(value = "Create category", response = CategoryDto.class)
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        //TODO проработать вариант "создания" уже существующей в БД Category
+        var category = categoryService.create(categoryMapper.fromDto(categoryDto));
+        return new ResponseEntity<>(categoryMapper.toDto(category), HttpStatus.CREATED);
     }
 
-    @PostMapping("/update/{categoryID}")
-    public ResponseEntity<ApiResponse> updateCategory(@PathVariable("categoryID") Long categoryID, @Valid @RequestBody Category category) {
-        // Check to see if the category exists.
-        if (Objects.nonNull(categoryService.readCategory(categoryID))) {
-            // If the category exists then update it.
-            categoryService.updateCategory(categoryID, category);
-            return new ResponseEntity<ApiResponse>(new ApiResponse(true, "updated the category"), HttpStatus.OK);
-        }
-        // If the category doesn't exist then return a response of unsuccessful.
-        return new ResponseEntity<>(new ApiResponse(false, "category does not exist"), HttpStatus.NOT_FOUND);
+    @PutMapping(path = "/{id}")
+    @ApiOperation(value = "Update category")
+    public ResponseEntity<CategoryDto> updateCategory(@NotNull @PathVariable("id") Long categoryId, @Valid @RequestBody CategoryDto categoryDto) {
+        var category = categoryService.update(categoryId, categoryMapper.fromDto(categoryDto));
+        return ResponseEntity.ok(categoryMapper.toDto(category));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ApiOperation(value = "Delete category")
+    public ResponseEntity<Void> delete(@NotNull @PathVariable("id") Long id) {
+        categoryService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

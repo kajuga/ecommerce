@@ -9,7 +9,6 @@ import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.service.AuthenticationService;
 import com.edu.ecommerce.service.CartService;
-import com.edu.ecommerce.service.CategoryService;
 import com.edu.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

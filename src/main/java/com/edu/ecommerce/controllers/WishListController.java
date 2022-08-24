@@ -4,6 +4,7 @@ package com.edu.ecommerce.controllers;
 import com.edu.ecommerce.common.ApiResponse;
 import com.edu.ecommerce.dto.product.ProductDto;
 import com.edu.ecommerce.exceptions.AuthenticationFailException;
+import com.edu.ecommerce.mapper.ProductMapper;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.model.WishList;
@@ -30,6 +31,8 @@ public class WishListController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    private ProductMapper productMapper;
 
     /*
     API to add a new product in wishlist
@@ -59,7 +62,7 @@ public class WishListController {
         List<ProductDto> products = new ArrayList<>();
         for (WishList wishList : wishLists) {
             // change each product to product DTO
-            products.add(new ProductDto(wishList.getProduct()));
+            products.add(productMapper.toDto(wishList.getProduct()));
         }
         // send the response to user
         return new ResponseEntity<>(products, HttpStatus.OK);

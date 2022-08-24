@@ -1,6 +1,5 @@
 package com.edu.ecommerce.dto.product;
 
-import com.edu.ecommerce.model.Product;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,10 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 
 
 @Builder
@@ -35,13 +33,4 @@ public class ProductDto {
             message = "CategoryId can contain only digits")
     private Long categoryId;
 
-
-    public ProductDto(Product product) {
-        this.setId(product.getId());
-        this.setName(product.getName());
-        this.setImageURL(product.getImageURL());
-        this.setDescription(product.getDescription());
-        this.setPrice(product.getPrice());
-        this.setCategoryId(product.getCategory().getId());
-    }
 }

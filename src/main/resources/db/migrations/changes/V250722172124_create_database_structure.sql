@@ -17,16 +17,16 @@ create table category
     image_url varchar(255) null
 );
 
-# create table product
-# (
-#     id BIGINT(20) auto_increment primary key,
-#     description varchar(255) null,
-#     image_url varchar(255) null,
-#     name varchar(255) null,
-#     price double not null,
-#     category_id BIGINT(20) not null,
-#     foreign key (category_id) references category (id)
-# );
+create table product
+(
+    id BIGINT(20) auto_increment primary key,
+    name varchar(255) null,
+    description varchar(255) null,
+    category_id BIGINT(20) not null,
+    image_url varchar(255) null,
+    price double not null,
+    foreign key (category_id) references category (id)
+);
 
 
 create table user

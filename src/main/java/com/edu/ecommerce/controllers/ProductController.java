@@ -1,58 +1,62 @@
 package com.edu.ecommerce.controllers;
 
-import com.edu.ecommerce.common.ApiResponse;
 import com.edu.ecommerce.dto.product.ProductDto;
-import com.edu.ecommerce.model.Category;
-import com.edu.ecommerce.service.impl.CategoryServiceImpl;
-import com.edu.ecommerce.service.ProductService;
+import com.edu.ecommerce.dto.user.UserDto;
+import com.edu.ecommerce.mapper.ProductMapper;
+import com.edu.ecommerce.model.Product;
+import com.edu.ecommerce.service.impl.ProductServiceImpl;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
+@RequiredArgsConstructor
+@CrossOrigin
+@Slf4j
 public class ProductController {
 
-    @Autowired
-    ProductService productService;
-    @Autowired
-    CategoryServiceImpl categoryService;
+    private final ProductServiceImpl productService;
+    private final ProductMapper productMapper;
 
 
-    @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addProduct(@RequestBody ProductDto productDto) {
-        Optional<Category> optionalCategory = Optional.ofNullable(categoryService.findById(productDto.getCategoryId()));
-        if (!optionalCategory.isPresent()) {
-            return new ResponseEntity<>(new ApiResponse(false, "category is invalid"), HttpStatus.CONFLICT);
-        }
-        Category category = optionalCategory.get();
-        productService.addProduct(productDto, category);
-        return new ResponseEntity<>(new ApiResponse(true, "Product has been added"), HttpStatus.CREATED);
-    }
-
-    @GetMapping("/")
+    @GetMapping
     @ApiOperation(value = "Get all products")
-    public ResponseEntity<List<ProductDto>> getProducts() {
-        List<ProductDto> productDtos = productService.listProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        var productDtos = productService.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
-    @PutMapping("/{productID}")
-    @ApiOperation(value = "Update product by Id")
-    public ResponseEntity<ApiResponse> updateProduct(@PathVariable("productID") Long productID,
-                                                     @RequestBody @Valid ProductDto productDto) {
-        Optional<Category> optionalCategory = Optional.ofNullable(categoryService.findById(productDto.getCategoryId()));
-        if (!optionalCategory.isPresent()) {
-            return new ResponseEntity<>(new ApiResponse(false, "category is invalid"), HttpStatus.CONFLICT);
-        }
-        Category category = optionalCategory.get();
-        productService.updateProduct(productID, productDto, category);
-        return new ResponseEntity<>(new ApiResponse(true, "Product was updated"), HttpStatus.OK);
+    //TODO обработчик ошибки при создании уже существующего product
+    @PostMapping()
+    @ApiOperation(value = "Create product")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+        var product = productService.create(productMapper.fromDto(productDto));
+        return new ResponseEntity<>(productMapper.toDto(product), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    @ApiOperation(value = "Update product by id")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") Long productId, @RequestBody @Valid ProductDto productDto) {
+                var product = productService.update(productId, productMapper.fromDto(productDto));
+        return ResponseEntity.ok(productMapper.toDto(product));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ApiOperation(value = "Delete product by id")
+    public ResponseEntity<Void> delete(@NotNull @PathVariable ("id") Long id) {
+        productService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

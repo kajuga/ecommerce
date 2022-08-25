@@ -8,6 +8,7 @@ import com.edu.ecommerce.service.impl.ProductServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import liquibase.pro.packaged.L;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,15 @@ public class ProductController {
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
     }
 
-    //TODO обработчик ошибки при создании уже существующего product
+    @GetMapping("/category/{categoryId}")
+    @ApiOperation(value = "Get all products by category")
+    public ResponseEntity<List<ProductDto>> findAllProductsByCategoryId(@NotNull @PathVariable("categoryId") Long id) {
+        var allProductsByCategoryId = productService.getAllProductByCategoryId(id);
+        var collect = allProductsByCategoryId.stream().map(productMapper::toDto).collect(Collectors.toList());
+        return ResponseEntity.ok(collect);
+    }
+
+    //TODO обработчик вывода ошибки при создании уже существующего product
     @PostMapping()
     @ApiOperation(value = "Create product")
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {

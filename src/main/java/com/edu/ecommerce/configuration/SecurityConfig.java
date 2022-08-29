@@ -38,10 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/login",
             "/secret_login",
-            "/signUp",
-            "/user/signUp",
-            "/user",
-            "/user/**"
+            "/user/signIn",
+            "/user/signUp"
     };
 
     private final TokenAuthenticationEntryPoint tokenAuthenticationEntryPoint;

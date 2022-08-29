@@ -22,6 +22,15 @@ public interface UserService {
      */
     User create(User user);
 
+
+    /**
+     * Create new User by unregistered user.
+     *
+     * @param user user for create
+     * @return created user
+     */
+    User createUnregisteredExternalUser(User user);
+
     /**
      * Updates transmitted user.
      *

@@ -85,6 +85,29 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public User createUnregisteredExternalUser(User user) {
+        String userRoleName = user.getUserRole().getName();
+        var isDestinationUserExternal = userRoleName.startsWith(EXTERNAL_PREFIX);
+        if (isDestinationUserExternal) {
+            checkUserEmailExist(user.getEmail());
+            String encryptedPassword = user.getPassword();
+            try {
+                encryptedPassword = hashPassword(user.getPassword());
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            user.setPassword(encryptedPassword);
+//            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
+//            // save token in database
+//            authenticationService.saveConfirmationToken(authenticationToken);
+            return userRepository.save(user);
+        } else {
+            throw new ArgumentNotValidException("Not enough rights.");
+        }
+    }
+
+    @Transactional
+    @Override
     public User update(Long id, User requestUser) {
         User userById = findById(id);
         checkUpdateAccess(userById, requestUser);

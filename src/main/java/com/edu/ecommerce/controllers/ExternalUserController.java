@@ -25,7 +25,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = "/user")
 @RequiredArgsConstructor
-@CrossOrigin
+//@CrossOrigin
 @Slf4j
 public class ExternalUserController {
 
@@ -43,7 +43,7 @@ public class ExternalUserController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<UserDto> SignUp(@Valid @RequestBody UserDto userDto) {
-        var user = userService.create(userMapper.fromDto(userDto));
+        var user = userService.createUnregisteredExternalUser(userMapper.fromDto(userDto));
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.CREATED);
     }
 

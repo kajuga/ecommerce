@@ -24,7 +24,7 @@ public class AccessRoleAspect {
     private final AuthenticatedUser authenticatedUser;
 
     @Around(value = "within(@org.springframework.web.bind.annotation.RestController *)" +
-            "&& !within(*..UserController) && !within(*..TokenController)")
+            "&& !within(*..UserController) && !within(*..TokenController) && !within(*..ExternalUserController)")
     public Object controllerMethods(ProceedingJoinPoint joinPoint) throws Throwable {
             var name = authenticatedUser.getCurrentUser().getUserRole().getName();
             var signature = (MethodSignature) joinPoint.getSignature();

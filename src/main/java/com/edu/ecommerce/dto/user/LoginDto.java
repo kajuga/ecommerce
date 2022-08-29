@@ -1,6 +1,6 @@
 package com.edu.ecommerce.dto.user;
 
-public class SignInDto {
+public class LoginDto {
 
     private String email;
     private String password;

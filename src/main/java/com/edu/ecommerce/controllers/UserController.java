@@ -1,7 +1,10 @@
 package com.edu.ecommerce.controllers;
 
+import com.edu.ecommerce.dto.login.LoginDto;
 import com.edu.ecommerce.dto.role.RoleDto;
-import com.edu.ecommerce.dto.user.UserDto;
+import com.edu.ecommerce.dto.user.*;
+import com.edu.ecommerce.exceptions.AuthenticationFailException;
+import com.edu.ecommerce.exceptions.CustomException;
 import com.edu.ecommerce.mapper.UserMapper;
 import com.edu.ecommerce.model.Role;
 import com.edu.ecommerce.model.UserRole;
@@ -146,7 +149,6 @@ public class UserController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<UserDto> updateUser(@NotNull @PathVariable("id") Long id, @Valid @RequestBody UserDto userDto) {
-//TODO исправить запись в БД и возврат незахешированного пароля
         var user = userService.update(id, userMapper.fromDto(userDto));
         return ResponseEntity.ok(userMapper.toDto(user));
     }
@@ -164,5 +166,9 @@ public class UserController {
             userService.delete(id);
             return ResponseEntity.ok().build();
     }
+
+
+
+
 
 }

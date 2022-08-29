@@ -1,19 +1,26 @@
 package com.edu.ecommerce.service.impl;
 
-import com.edu.ecommerce.exceptions.ArgumentNotValidException;
-import com.edu.ecommerce.exceptions.CrmException;
-import com.edu.ecommerce.exceptions.ResourceNotFoundException;
+import com.edu.ecommerce.configuration.MessageStrings;
+import com.edu.ecommerce.dto.login.LoginDto;
+import com.edu.ecommerce.dto.user.SignInResponseDto;
+import com.edu.ecommerce.dto.user.SignUpDto;
+import com.edu.ecommerce.dto.user.SignUpResponseDto;
+import com.edu.ecommerce.exceptions.*;
 
+import com.edu.ecommerce.model.AuthenticationToken;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.repository.RoleRepository;
 import com.edu.ecommerce.repository.UserRepository;
 import com.edu.ecommerce.security.AuthenticatedUser;
+import com.edu.ecommerce.service.interfaces.AuthenticationService;
 import com.edu.ecommerce.service.interfaces.DataService;
 import com.edu.ecommerce.service.interfaces.UserService;
 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +31,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 /**
@@ -38,12 +46,14 @@ public class UserServiceImpl implements UserService {
     private final AuthenticatedUser authenticatedUser;
     private final RoleRepository roleRepository;
     private final DataService dataService;
+    private final AuthenticationService authenticationService;
 
     protected static final String ADMINISTRATOR_ROLE = "ADMINISTRATOR";
     protected static final String MANAGER_ROLE = "MANAGER";
     protected static final String SPECIALIST_ROLE = "SPECIALIST";
     protected static final String EXTERNAL_PREFIX = "EXTERNAL_";
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
     @Override
@@ -226,6 +236,54 @@ public class UserServiceImpl implements UserService {
         String myHash = DatatypeConverter
                 .printHexBinary(digest).toUpperCase();
         return myHash;
+    }
+
+
+    public SignUpResponseDto signUp(SignUpDto signupDto)  throws CustomException {
+        if (Objects.nonNull(userRepository.findByEmail(signupDto.getEmail()))) {
+            throw new CustomException("User already exists");
+        }
+        String encryptedPassword = signupDto.getPassword();
+        try {
+            encryptedPassword = hashPassword(signupDto.getPassword());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            logger.error("hashing password failed {}", e.getMessage());
+        }
+
+        User user = new User(signupDto.getFirstName(), signupDto.getLastName(), signupDto.getEmail(), encryptedPassword );
+        try {
+            userRepository.save(user);
+            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
+            authenticationService.saveConfirmationToken(authenticationToken);
+            return new SignUpResponseDto("success", "user created successfully");
+        } catch (Exception e) {
+            throw new CustomException(e.getMessage());
+        }
+    }
+
+    @Override
+    public SignInResponseDto signIn(LoginDto loginDto) throws AuthenticationFailException, CustomException {
+        User user = findByEmail(loginDto.getEmail());
+        if(!Objects.nonNull(user)){
+            throw new AuthenticationFailException("user not present");
+        }
+        try {
+            if (!user.getPassword().equals(hashPassword(loginDto.getPassword()))){
+                throw  new AuthenticationFailException(MessageStrings.WRONG_PASSWORD);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            logger.error("hashing password failed {}", e.getMessage());
+            throw new CustomException(e.getMessage());
+        }
+
+        AuthenticationToken token = authenticationService.getToken(user);
+        if(!Objects.nonNull(token)) {
+            throw new CustomException(MessageStrings.AUTH_TOKEN_NOT_PRESENT);
+        }
+
+        return new SignInResponseDto ("success", token.getToken());
     }
 
 }

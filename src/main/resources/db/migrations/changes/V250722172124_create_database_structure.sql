@@ -45,6 +45,26 @@ create table user
   COLLATE = utf8_unicode_ci;
 
 
+create table cart
+(
+    id BIGINT(20) auto_increment primary key,
+    created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    quantity int not null,
+    product_id BIGINT(20)  not null,
+    user_id BIGINT(20) not null,
+    foreign key (user_id) references user (id),
+    foreign key (product_id) references product (id)
+);
+
+create table token
+(
+  id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+  token VARCHAR(255) DEFAULT NULL,
+  created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  user_id BIGINT(20) not null,
+  foreign key (user_id) REFERENCES user (id)
+);
+
 
 # create table order
 # (
@@ -69,16 +89,7 @@ create table user
 #     foreign key (product_id) references product (id)
 # );
 #
-# create table cart
-# (
-#     id int auto_increment primary key,
-#     created_date datetime(6) null,
-#     quantity int not null,
-#     product_id BIGINT(20)  not null,
-#     user_id BIGINT(20) not null,
-#     foreign key (user_id) references user (id),
-#     foreign key (product_id) references product (id)
-# );
+
 
 # create table tokens
 # (

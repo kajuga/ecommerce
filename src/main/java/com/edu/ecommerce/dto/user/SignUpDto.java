@@ -1,6 +1,20 @@
 package com.edu.ecommerce.dto.user;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SignUpDto {
 
     private String firstName;

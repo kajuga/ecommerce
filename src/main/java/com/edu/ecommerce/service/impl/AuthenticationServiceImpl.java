@@ -1,4 +1,4 @@
-package com.edu.ecommerce.service;
+package com.edu.ecommerce.service.impl;
 
 
 import com.edu.ecommerce.configuration.MessageStrings;
@@ -6,13 +6,14 @@ import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.model.AuthenticationToken;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.repository.TokenRepository;
+import com.edu.ecommerce.service.interfaces.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     TokenRepository repository;

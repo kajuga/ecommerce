@@ -1,5 +1,11 @@
 package com.edu.ecommerce.service.interfaces;
 
+import com.edu.ecommerce.dto.login.LoginDto;
+import com.edu.ecommerce.dto.user.SignInResponseDto;
+import com.edu.ecommerce.dto.user.SignUpDto;
+import com.edu.ecommerce.dto.user.SignUpResponseDto;
+import com.edu.ecommerce.exceptions.AuthenticationFailException;
+import com.edu.ecommerce.exceptions.CustomException;
 import com.edu.ecommerce.model.User;
 import java.util.List;
 
@@ -74,5 +80,10 @@ public interface UserService {
 
 
     Boolean isUserRoleEquals(String role);
+
+
+    SignUpResponseDto signUp(SignUpDto signupDto) throws CustomException;
+
+    SignInResponseDto signIn(LoginDto loginDto) throws AuthenticationFailException, CustomException;
 
 }

@@ -1,14 +1,9 @@
 package com.edu.ecommerce.controllers;
 
 import com.edu.ecommerce.dto.product.ProductDto;
-import com.edu.ecommerce.dto.user.UserDto;
 import com.edu.ecommerce.mapper.ProductMapper;
-import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.service.impl.ProductServiceImpl;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import liquibase.pro.packaged.L;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

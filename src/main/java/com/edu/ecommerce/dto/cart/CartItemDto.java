@@ -3,43 +3,36 @@ package com.edu.ecommerce.dto.cart;
 
 import com.edu.ecommerce.model.Cart;
 import com.edu.ecommerce.model.Product;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CartItemDto {
 
-    private Integer id;
+//    @ApiModelProperty(hidden = true)
+    private Long id;
+
     private @NotNull Integer quantity;
     private @NotNull Product product;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 
     public CartItemDto(Cart cart) {
         this.setId(cart.getId());
         this.setQuantity(cart.getQuantity());
         this.setProduct(cart.getProduct());
+
+
     }
 }

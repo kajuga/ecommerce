@@ -9,7 +9,7 @@ import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.model.WishList;
 import com.edu.ecommerce.repository.ProductRepository;
-import com.edu.ecommerce.service.AuthenticationService;
+import com.edu.ecommerce.service.impl.AuthenticationServiceImpl;
 import com.edu.ecommerce.service.WishListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class WishListController {
     private WishListService wishListService;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationServiceImpl;
 
     @Autowired
     private ProductRepository productRepository;
@@ -40,9 +40,9 @@ public class WishListController {
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addWishList(@RequestBody ProductDto productDto, @RequestParam("token") String token) throws AuthenticationFailException {
         // first authenticate if the token is valid
-        authenticationService.authenticate(token);
+        authenticationServiceImpl.authenticate(token);
         // then fetch the user linked to the token
-        User user = authenticationService.getUser(token);
+        User user = authenticationServiceImpl.getUser(token);
         Product product = productRepository.getById(productDto.getId());
         // save wish list
         WishList wishList = new WishList(user, product);
@@ -54,9 +54,9 @@ public class WishListController {
     @GetMapping("/{token}")
     public ResponseEntity<List<ProductDto>> getWishList(@PathVariable("token") String token) throws AuthenticationFailException {
         // first authenticate if the token is valid
-        authenticationService.authenticate(token);
+        authenticationServiceImpl.authenticate(token);
         // then fetch the user linked to the token
-        User user = authenticationService.getUser(token);
+        User user = authenticationServiceImpl.getUser(token);
         // first retrieve the wishlist items
         List<WishList> wishLists = wishListService.readWishList(user);
         List<ProductDto> products = new ArrayList<>();

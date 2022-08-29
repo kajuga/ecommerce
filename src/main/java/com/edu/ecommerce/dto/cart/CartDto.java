@@ -1,31 +1,31 @@
 package com.edu.ecommerce.dto.cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CartDto {
 
+
+    @JsonProperty("Cart items")
     private List<CartItemDto> cartItems;
 
+    @JsonProperty("Total cost")
     private double totalCost;
 
-    public CartDto(List<CartItemDto> cartItemDtoList, double totalCost) {
-        this.cartItems = cartItemDtoList;
-        this.totalCost = totalCost;
-    }
 
-    public List<CartItemDto> getcartItems() {
-        return cartItems;
-    }
 
-    public void setCartItems(List<CartItemDto> cartItemDtoList) {
-        this.cartItems = cartItemDtoList;
     }
-
-    public double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(int totalCost) {
-        this.totalCost = totalCost;
-    }
-}

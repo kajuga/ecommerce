@@ -1,5 +1,18 @@
 version: '3.8'
 services:
+  mysql-master:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=ecommerce_v2
+      - MYSQL_ROOT_PASSWORD=Ff14789kl1!
+    ports:
+      - '3308:3306'
+    volumes:
+      - db-master:/var/lib/mysql
+      #- ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
   mysql:
     image: mysql:8.0
     cap_add:
@@ -23,4 +36,6 @@ services:
       - "SPRING_PROFILES_ACTIVE=docker"
 volumes:
   db:
+    driver: local
+  db-master:
     driver: local

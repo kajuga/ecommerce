@@ -42,10 +42,10 @@ public class ExternalUserController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<UserDto> SignUp(@Valid @RequestBody UserDto userDto) {
-        var user = userService.createUnregisteredExternalUser(userMapper.fromDto(userDto));
-        return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.CREATED);
+    public SignUpResponseDto SignUp(@Valid @RequestBody SignUpDto signUpDto) throws CustomException {
+        return userService.createUnregisteredExternalUser(signUpDto);
     }
+
 
 
     @PostMapping("/signIn")

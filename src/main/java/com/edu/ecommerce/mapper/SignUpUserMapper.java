@@ -1,5 +1,6 @@
 package com.edu.ecommerce.mapper;
 
+import com.edu.ecommerce.dto.user.SignUpDto;
 import com.edu.ecommerce.dto.user.UserDto;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.service.interfaces.RoleService;
@@ -14,14 +15,14 @@ public class SignUpUserMapper {
     private final RoleService roleService;
 
 
-        public User fromDto(UserDto userDto) {
-        var role = roleService.findById(userDto.getRoleId());
+        public User fromDto(SignUpDto signUpDto) {
+        var role = roleService.findById(signUpDto.getRoleId());
         return User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .email(userDto.getEmail())
+                .firstName(signUpDto.getFirstName())
+                .lastName(signUpDto.getLastName())
+                .email(signUpDto.getEmail())
                 .userRole(role)
-                .password(userDto.getPassword())
+                .password(signUpDto.getPassword())
                 .build();
     }
 

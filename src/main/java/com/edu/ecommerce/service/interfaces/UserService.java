@@ -26,10 +26,10 @@ public interface UserService {
     /**
      * Create new User by unregistered user.
      *
-     * @param user user for create
-     * @return created user
+     * @param signupDto user for create
+     * @return created user DTO's
      */
-    User createUnregisteredExternalUser(User user);
+    SignUpResponseDto createUnregisteredExternalUser(SignUpDto signupDto) throws CustomException;
 
     /**
      * Updates transmitted user.
@@ -91,7 +91,6 @@ public interface UserService {
     Boolean isUserRoleEquals(String role);
 
 
-    SignUpResponseDto signUp(SignUpDto signupDto) throws CustomException;
 
     SignInResponseDto signIn(LoginDto loginDto) throws AuthenticationFailException, CustomException;
 

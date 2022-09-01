@@ -1,19 +1,14 @@
 package com.edu.ecommerce.model;
 
 import lombok.*;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
 
 @Entity
+@Table (name = "token")
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor

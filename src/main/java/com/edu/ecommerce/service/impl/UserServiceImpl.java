@@ -7,13 +7,16 @@ import com.edu.ecommerce.dto.user.SignUpDto;
 import com.edu.ecommerce.dto.user.SignUpResponseDto;
 import com.edu.ecommerce.exceptions.*;
 
+import com.edu.ecommerce.mapper.SignUpUserMapper;
 import com.edu.ecommerce.model.AuthenticationToken;
 import com.edu.ecommerce.model.User;
+import com.edu.ecommerce.model.UserRole;
 import com.edu.ecommerce.repository.RoleRepository;
 import com.edu.ecommerce.repository.UserRepository;
 import com.edu.ecommerce.security.AuthenticatedUser;
 import com.edu.ecommerce.service.interfaces.AuthenticationService;
 import com.edu.ecommerce.service.interfaces.DataService;
+import com.edu.ecommerce.service.interfaces.RoleService;
 import com.edu.ecommerce.service.interfaces.UserService;
 
 
@@ -42,18 +45,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
     private final AuthenticatedUser authenticatedUser;
     private final RoleRepository roleRepository;
+    private final RoleService roleService;
     private final DataService dataService;
     private final AuthenticationService authenticationService;
+    private final SignUpUserMapper signUpUserMapper;
 
     protected static final String ADMINISTRATOR_ROLE = "ADMINISTRATOR";
     protected static final String MANAGER_ROLE = "MANAGER";
     protected static final String SPECIALIST_ROLE = "SPECIALIST";
     protected static final String EXTERNAL_PREFIX = "EXTERNAL_";
 
-    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
     @Override
@@ -85,24 +91,27 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User createUnregisteredExternalUser(User user) {
-        String userRoleName = user.getUserRole().getName();
-        var isDestinationUserExternal = userRoleName.startsWith(EXTERNAL_PREFIX);
-        if (isDestinationUserExternal) {
-            checkUserEmailExist(user.getEmail());
-            String encryptedPassword = user.getPassword();
-            try {
-                encryptedPassword = hashPassword(user.getPassword());
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
+    public SignUpResponseDto createUnregisteredExternalUser(SignUpDto signupDto) throws CustomException {
+
+        if (!Objects.nonNull(roleService.findById(signupDto.getRoleId()))) {
+            throw new CustomException("User role is not exists");
+        }
+        checkUserEmailExist(signupDto.getEmail());
+
+        try {
+            String encryptedPassword = hashPassword(signupDto.getPassword());
+
+            User user = signUpUserMapper.fromDto(signupDto);
             user.setPassword(encryptedPassword);
-//            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
-//            // save token in database
-//            authenticationService.saveConfirmationToken(authenticationToken);
-            return userRepository.save(user);
-        } else {
-            throw new ArgumentNotValidException("Not enough rights.");
+            //TODO поправить на "искать по преффиксу"
+            user.setUserRole(roleService.findById(1003L));
+            userRepository.save(user);
+            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
+            authenticationService.saveConfirmationToken(authenticationToken);
+            return new SignUpResponseDto("success", "user created successfully");
+        } catch (Exception e) {
+            logger.error("Error creating user", e);
+            throw new CustomException(e.getMessage());
         }
     }
 
@@ -261,29 +270,6 @@ public class UserServiceImpl implements UserService {
         return myHash;
     }
 
-
-    public SignUpResponseDto signUp(SignUpDto signupDto)  throws CustomException {
-        if (Objects.nonNull(userRepository.findByEmail(signupDto.getEmail()))) {
-            throw new CustomException("User already exists");
-        }
-        String encryptedPassword = signupDto.getPassword();
-        try {
-            encryptedPassword = hashPassword(signupDto.getPassword());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            logger.error("hashing password failed {}", e.getMessage());
-        }
-
-        User user = new User(signupDto.getFirstName(), signupDto.getLastName(), signupDto.getEmail(), encryptedPassword );
-        try {
-            userRepository.save(user);
-            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
-            authenticationService.saveConfirmationToken(authenticationToken);
-            return new SignUpResponseDto("success", "user created successfully");
-        } catch (Exception e) {
-            throw new CustomException(e.getMessage());
-        }
-    }
 
     @Override
     public SignInResponseDto signIn(LoginDto loginDto) throws AuthenticationFailException, CustomException {

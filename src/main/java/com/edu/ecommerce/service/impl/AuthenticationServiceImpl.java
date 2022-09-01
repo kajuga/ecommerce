@@ -7,28 +7,36 @@ import com.edu.ecommerce.model.AuthenticationToken;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.repository.TokenRepository;
 import com.edu.ecommerce.service.interfaces.AuthenticationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    @Autowired
-    TokenRepository repository;
+    private final TokenRepository repository;
 
     // save the confirmation token
+    @Transactional
+    @Override
     public void saveConfirmationToken(AuthenticationToken authenticationToken) {
         repository.save(authenticationToken);
     }
 
-    // get token of the User
+    @Transactional(readOnly = true)
+    @Override
     public AuthenticationToken getToken(User user) {
         return repository.findTokenByUser(user);
     }
 
-    // get User from the token
+    @Transactional(readOnly = true)
+    @Override
     public User getUser(String token) {
         AuthenticationToken authenticationToken = repository.findTokenByToken(token);
         if (Objects.nonNull(authenticationToken)) {

@@ -4,6 +4,8 @@ package com.edu.ecommerce.service.impl;
 import com.edu.ecommerce.dto.cart.AddToCartDto;
 import com.edu.ecommerce.dto.cart.CartDto;
 import com.edu.ecommerce.dto.cart.CartItemDto;
+import com.edu.ecommerce.mapper.CartItemDtoMapper;
+import com.edu.ecommerce.mapper.ProductMapper;
 import com.edu.ecommerce.model.Cart;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
@@ -21,6 +23,7 @@ import java.util.List;
 public class CartServiceImpl implements CartService {
 
     CartRepository cartRepository;
+    ProductMapper productMapper;
 
     @Override
     public void addToCart(AddToCartDto addToCartDto, Product product, User user) {
@@ -33,7 +36,7 @@ public class CartServiceImpl implements CartService {
         List<Cart> cartList = cartRepository.findAllByUserOrderByCreatedDateDesc(user);
         List<CartItemDto> cartItems = new ArrayList<>();
         for (Cart cart:cartList){
-            CartItemDto cartItemDto = new CartItemDto(cart);
+            CartItemDto cartItemDto = new CartItemDto(cart.getId(), cart.getQuantity(), productMapper.toDto(cart.getProduct()));
             cartItems.add(cartItemDto);
         }
         double totalCost = 0;

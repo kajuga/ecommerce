@@ -3,6 +3,7 @@ package com.edu.ecommerce.service;
 import com.edu.ecommerce.dto.cart.AddToCartDto;
 import com.edu.ecommerce.dto.cart.CartDto;
 import com.edu.ecommerce.dto.cart.CartItemDto;
+import com.edu.ecommerce.mapper.CartItemDtoMapper;
 import com.edu.ecommerce.model.Cart;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
@@ -17,6 +18,9 @@ import java.util.List;
 public class CartService {
     @Autowired
     CartRepository cartRepository;
+    @Autowired
+    CartItemDtoMapper cartItemDtoMapper;
+
 
     public void addToCart(AddToCartDto addToCartDto, Product product, User user) {
         Cart cart = new Cart(product, addToCartDto.getQuantity(), user);
@@ -30,8 +34,7 @@ public class CartService {
         // convert cart to cartItemDto
         List<CartItemDto> cartItems = new ArrayList<>();
         for (Cart cart:cartList){
-            CartItemDto cartItemDto = new CartItemDto(cart);
-            cartItems.add(cartItemDto);
+            cartItems.add(cartItemDtoMapper.toDto(cart));
         }
 
         // calculate the total price

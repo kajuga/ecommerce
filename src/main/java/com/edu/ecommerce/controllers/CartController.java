@@ -7,14 +7,17 @@ import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.service.impl.AuthenticationServiceImpl;
-import com.edu.ecommerce.service.CartService;
+import com.edu.ecommerce.service.impl.CartServiceImpl;
 import com.edu.ecommerce.service.impl.ProductServiceImpl;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/cart")
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class CartController {
 
-    private final CartService cartService;
+    private final CartServiceImpl cartService;
     private final ProductServiceImpl productService;
     private final AuthenticationServiceImpl authenticationServiceImpl;
 
@@ -47,12 +50,20 @@ public class CartController {
     @GetMapping("/get")
     @ApiOperation(value = "Get products from a Cart")
     public ResponseEntity<CartDto> getCartItems(@RequestParam("token") String token) throws AuthenticationFailException {
-        // first authenticate the token
         authenticationServiceImpl.authenticate(token);
-        // get the user
         User user = authenticationServiceImpl.getUser(token);
-        // get items in the cart for the user.
         CartDto cartDto = cartService.listCartItems(user);
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
+
+    @DeleteMapping(path = "/delete")
+    @ApiOperation(value = "Delete current user's Cart")
+    public ResponseEntity<Void> delete(@RequestParam("token") String token) throws AuthenticationFailException {
+        authenticationServiceImpl.authenticate(token);
+        User user = authenticationServiceImpl.getUser(token);
+        cartService.deleteCurrentUserCart(user);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

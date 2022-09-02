@@ -12,7 +12,9 @@ import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.repository.CartRepository;
 import com.edu.ecommerce.service.interfaces.CartService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,10 @@ import java.util.List;
 @Service
 public class CartServiceImpl implements CartService {
 
+    @Autowired
     CartRepository cartRepository;
-    ProductMapper productMapper;
+    @Autowired
+    CartItemDtoMapper cartItemDtoMapper;
 
     @Override
     public void addToCart(AddToCartDto addToCartDto, Product product, User user) {
@@ -31,23 +35,32 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
+
+
     @Override
     public CartDto listCartItems(User user) {
+        // first get all the cart items for user
         List<Cart> cartList = cartRepository.findAllByUserOrderByCreatedDateDesc(user);
+
+        // convert cart to cartItemDto
         List<CartItemDto> cartItems = new ArrayList<>();
         for (Cart cart:cartList){
-            CartItemDto cartItemDto = new CartItemDto(cart.getId(), cart.getQuantity(), productMapper.toDto(cart.getProduct()));
-            cartItems.add(cartItemDto);
+            cartItems.add(cartItemDtoMapper.toDto(cart));
         }
+
+        // calculate the total price
         double totalCost = 0;
         for (CartItemDto cartItemDto :cartItems){
             totalCost += cartItemDto.getProduct().getPrice() * cartItemDto.getQuantity();
         }
+
+        // return cart DTO
         return new CartDto(cartItems,totalCost);
     }
 
     @Override
-    public void deleteUserCartItems(User user) {
-        cartRepository.deleteByUser(user);
+    @Transactional
+    public void deleteCurrentUserCart(User user) {
+        cartRepository.deleteCartByUser(user);
     }
 }

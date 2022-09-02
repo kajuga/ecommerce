@@ -11,7 +11,7 @@ public interface CartService {
 
     public CartDto listCartItems(User user);
 
-    public void deleteUserCartItems(User user);
+    public void deleteCurrentUserCart(User user);
 
 
 }

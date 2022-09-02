@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+
 @RestController
 @RequestMapping(path = "/role")
 @RequiredArgsConstructor
@@ -27,7 +28,6 @@ public class RoleController {
 
     private final MapperFacade mapper;
     private final RoleService roleService;
-
 
     @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
     @GetMapping

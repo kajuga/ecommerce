@@ -4,7 +4,6 @@ import com.edu.ecommerce.dto.login.LoginDto;
 import com.edu.ecommerce.dto.user.SignInResponseDto;
 import com.edu.ecommerce.dto.user.SignUpDto;
 import com.edu.ecommerce.dto.user.SignUpResponseDto;
-import com.edu.ecommerce.dto.user.UserDto;
 import com.edu.ecommerce.exceptions.AuthenticationFailException;
 import com.edu.ecommerce.exceptions.CustomException;
 import com.edu.ecommerce.mapper.UserMapper;
@@ -15,8 +14,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +22,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = "/user")
 @RequiredArgsConstructor
-//@CrossOrigin
 @Slf4j
 public class ExternalUserController {
 
@@ -46,12 +42,9 @@ public class ExternalUserController {
         return userService.createUnregisteredExternalUser(signUpDto);
     }
 
-
-
     @PostMapping("/signIn")
     @ApiOperation(value = "User Sign In (login registered user)")
     public SignInResponseDto SignIn(@Valid @RequestBody LoginDto loginDto) throws CustomException, AuthenticationFailException {
         return userService.signIn(loginDto);
     }
-
 }

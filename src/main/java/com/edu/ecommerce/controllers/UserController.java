@@ -1,10 +1,7 @@
 package com.edu.ecommerce.controllers;
 
-import com.edu.ecommerce.dto.login.LoginDto;
 import com.edu.ecommerce.dto.role.RoleDto;
 import com.edu.ecommerce.dto.user.*;
-import com.edu.ecommerce.exceptions.AuthenticationFailException;
-import com.edu.ecommerce.exceptions.CustomException;
 import com.edu.ecommerce.mapper.UserMapper;
 import com.edu.ecommerce.model.Role;
 import com.edu.ecommerce.model.UserRole;
@@ -166,9 +163,5 @@ public class UserController {
             userService.delete(id);
             return ResponseEntity.ok().build();
     }
-
-
-
-
 
 }

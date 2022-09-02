@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
 
+
 @RestController
 @RequestMapping(value = "/")
 @RequiredArgsConstructor
@@ -34,7 +35,6 @@ public class TokenController {
         return ResponseEntity.ok(tokenService.createToken(fromDto(loginDto)));
 
     }
-
 
     private Login fromDto(LoginDto loginDto) {
         return Login.builder()

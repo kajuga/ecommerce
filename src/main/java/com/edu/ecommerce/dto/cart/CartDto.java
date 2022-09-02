@@ -19,13 +19,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CartDto {
 
-
     @JsonProperty("Cart items")
     private List<CartItemDto> cartItems;
 
     @JsonProperty("Total cost")
     private double totalCost;
 
-
-
-    }
+}

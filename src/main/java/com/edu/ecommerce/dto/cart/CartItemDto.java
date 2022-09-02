@@ -5,7 +5,6 @@ import com.edu.ecommerce.model.Cart;
 import com.edu.ecommerce.model.Product;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,13 +25,14 @@ public class CartItemDto {
     private Long id;
 
     private @NotNull Integer quantity;
+
+    //TODO заменить продукт на дто какой-нибудь
     private @NotNull Product product;
 
     public CartItemDto(Cart cart) {
         this.setId(cart.getId());
         this.setQuantity(cart.getQuantity());
         this.setProduct(cart.getProduct());
-
 
     }
 }

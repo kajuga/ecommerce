@@ -1,0 +1,76 @@
+package com.edu.ecommerce.service.util.impl;
+
+import com.edu.ecommerce.exceptions.ResourceNotFoundException;
+import com.edu.ecommerce.model.File;
+import com.edu.ecommerce.service.util.interfaces.FileManager;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.FileSystemException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+//@Profile(value = {"local"})
+@Slf4j
+@Component
+public class LocalFileManager implements FileManager {
+
+
+    private static final String DIRECTORY_PATH = "app-file-service/src/main/resources/fileStorage/";
+
+    @Override
+    public void upload(byte[] resource) throws FileSystemException {
+        log.info("Uploading file ");
+        var path = Paths.get(DIRECTORY_PATH);
+        try {
+            Files.createDirectories(path.getParent());
+            Path file = Files.createFile(path);
+            try (FileOutputStream stream = new FileOutputStream(file.toString())) {
+                stream.write(resource);
+            }
+        } catch (IOException e) {
+            log.error("Could not save file !!!");
+            throw new FileSystemException("Could not save file !!!");
+        }
+        log.info("Uploading file successful completed !!!");
+    }
+
+    @Override
+    public Resource download(File file) {
+        log.info("Downloading file :{}", file);
+        try {
+            var path = Path.of(DIRECTORY_PATH + file.getName());
+            var resource = new UrlResource(path.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                log.info("Downloading file :{} successful completed !!!", file);
+                return resource;
+            } else {
+                log.error("Could not read file: {} !!!", file);
+                throw new ResourceNotFoundException("Could not read file: " + file.getName());
+            }
+        } catch (MalformedURLException e) {
+            log.error("Could not read file: {} !!!", file);
+            throw new ResourceNotFoundException("Could not read file: " + file.getName());
+        }
+    }
+
+    @Override
+    public void delete(File file) {
+        var path = Path.of(DIRECTORY_PATH + file.getName());
+        log.info("Deleting file :{}", file);
+        try {
+            Files.delete(path);
+            log.info("Deleting file :{} successful completed !!!", file);
+        } catch (IOException e) {
+            log.error("Could not delete file: {}", file);
+            throw new ResourceNotFoundException("Could not find file: " + file.getName());
+        }
+    }
+}

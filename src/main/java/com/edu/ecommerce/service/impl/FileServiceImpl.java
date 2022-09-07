@@ -91,7 +91,8 @@ public class FileServiceImpl implements FileService {
     public File deleteById(Long fileId) {
         File file = findById(fileId);
         fileRepository.delete(file);
-        fileManager.delete(file);
+//delete file from local path realisation
+//        fileManager.delete(file);
         return file;
     }
 

@@ -5,14 +5,13 @@ import com.edu.ecommerce.dto.cart.AddToCartDto;
 import com.edu.ecommerce.dto.cart.CartDto;
 import com.edu.ecommerce.dto.cart.CartItemDto;
 import com.edu.ecommerce.mapper.CartItemDtoMapper;
-import com.edu.ecommerce.mapper.ProductMapper;
 import com.edu.ecommerce.model.Cart;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.model.User;
 import com.edu.ecommerce.repository.CartRepository;
 import com.edu.ecommerce.service.interfaces.CartService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +21,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    @Autowired
-    CartRepository cartRepository;
-    @Autowired
-    CartItemDtoMapper cartItemDtoMapper;
+    private final CartRepository cartRepository;
+    private final CartItemDtoMapper cartItemDtoMapper;
 
     @Override
     public void addToCart(AddToCartDto addToCartDto, Product product, User user) {

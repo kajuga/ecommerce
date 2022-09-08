@@ -56,14 +56,14 @@ public class FileServiceImpl implements FileService {
     @Override
     public File uploadFile(MultipartFile resource, FileType type) throws FileSystemException {
         checkFormatAndSize(resource.getOriginalFilename(), resource.getSize(), type);
-        File createdFile = null;
+        File newFile = File.builder()
+                .name(resource.getOriginalFilename())
+                .size(resource.getSize())
+                .createdDate(LocalDateTime.now())
+                .build();
 
-        try {
-            createdFile = createFile(resource.getBytes(), resource.getOriginalFilename(), resource.getSize(), type);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return Optional.ofNullable(createdFile).orElseThrow(() -> new FileSystemException("File was not uploaded"));
+        File createdFile = fileRepository.save(newFile);
+        return Optional.of(createdFile).orElseThrow(() -> new FileSystemException("File was not uploaded"));
     }
 
     @Transactional(rollbackFor = {FileSystemException.class})

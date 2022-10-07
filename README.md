@@ -2,8 +2,6 @@
 
 ## TODO
 + add tests
-+ add picture's upload
-+ 
 
 
 

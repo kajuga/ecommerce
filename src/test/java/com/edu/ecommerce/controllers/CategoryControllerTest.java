@@ -1,5 +1,6 @@
 package com.edu.ecommerce.controllers;
 
+import com.edu.ecommerce.config.MvcTestConfiguration;
 import com.edu.ecommerce.configuration.SecurityConfig;
 import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.repository.CategoryRepository;
@@ -85,7 +86,6 @@ class CategoryControllerTest {
 
     @Test
     void updateCategory() throws Exception {
-
         Mockito.when(categoryRepository.save(Mockito.any(Category.class)))
                 .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
         Mockito.when(categoryRepository.findById(1L))

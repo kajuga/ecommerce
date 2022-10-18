@@ -201,16 +201,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private boolean isUserEmailAlreadyExist(String email) {
 
-        var count = userRepository.countByEmail(email);
-        return Objects.nonNull(count) && count > 0;
-    }
 
-    private void checkUserEmailExist(String email) {
+    void checkUserEmailExist(String email) {
         if (isUserEmailAlreadyExist(email)) {
             throw new CrmException(String.format("User with email = %s is already exist.", email));
         }
+    }
+
+    public boolean isUserEmailAlreadyExist(String email) {
+        var count = userRepository.countByEmail(email);
+        return Objects.nonNull(count) && count > 0;
     }
 
     @Override

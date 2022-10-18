@@ -6,13 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -55,8 +52,6 @@ class CategoryServiceImplTest {
         assertEquals(category.getImageUrl(), "http://1820:80/image_borsch.jpg");
     }
 
-
-
     @Test
     public void addCategory() {
         Category inputCategory = new Category(666L, "Korean Food", "Korean Food description", "https://korean_food.png");
@@ -69,11 +64,7 @@ class CategoryServiceImplTest {
     @Test
     void update() {
 
-
     }
-
-
-
 
     @Test
     public void getCategory() {
@@ -97,8 +88,6 @@ class CategoryServiceImplTest {
         assertNotEquals(3, category.size());
     }
 
-
-
     @Test
     void findCategoryByName() {
         Category findedByNameCategory = new Category(667L, "Russian Food", "Nice russian borsch", "http://1820:80/image_borsch.jpg");
@@ -109,10 +98,4 @@ class CategoryServiceImplTest {
         assertEquals(category.getImageUrl(), "http://1820:80/image_borsch.jpg");
     }
 
-
-
-
-    @Test
-    void delete() {
-    }
 }

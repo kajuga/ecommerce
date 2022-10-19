@@ -2,7 +2,6 @@ package com.edu.ecommerce.service.impl;
 
 import com.edu.ecommerce.exceptions.CrmException;
 import com.edu.ecommerce.exceptions.ResourceNotFoundException;
-import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.model.Product;
 import com.edu.ecommerce.repository.CategoryRepository;
 import com.edu.ecommerce.repository.ProductRepository;
@@ -14,10 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

@@ -1,14 +1,16 @@
 package com.edu.ecommerce.config;
 
 import com.edu.ecommerce.repository.UserRepository;
-import com.edu.ecommerce.service.impl.UserServiceImpl;
-import com.edu.ecommerce.service.interfaces.UserService;
+import com.edu.ecommerce.service.impl.UserServiceImpl;;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.Mockito.mock;
 
 @Configuration
+@Profile("mock-test")
 public class TestConfig {
 
 

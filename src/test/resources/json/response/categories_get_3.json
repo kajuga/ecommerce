@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "categoryName": "Borsch",
+    "description": "Russian food",
+    "imageUrl": "http://borsch.jpg"
+  },
+  {
+    "id": 2,
+    "categoryName": "Salo",
+    "description": "Ukrainian food",
+    "imageUrl": "http://salo.jpg"
+  },
+  {
+    "id": 3,
+    "categoryName": "Hot dogs",
+    "description": "Korean food",
+    "imageUrl": "http://hot_dogs.jpg"
+  }
+]

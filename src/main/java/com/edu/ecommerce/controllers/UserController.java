@@ -80,8 +80,6 @@ public class UserController {
         return ResponseEntity.ok(collect);
     }
 
-
-
     @GetMapping(path = "/{id}")
     @ApiOperation(value = "Get user by id")
     @ApiResponses(value = {
@@ -163,5 +161,4 @@ public class UserController {
             userService.delete(id);
             return ResponseEntity.ok().build();
     }
-
 }

@@ -6,6 +6,8 @@ import com.edu.ecommerce.model.Role;
 import com.edu.ecommerce.security.AccessRole;
 import com.edu.ecommerce.service.interfaces.CategoryService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,19 @@ public class CategoryController {
         var categoryList = categoryService.findAll();
         return ResponseEntity.ok(mapper.mapAsList(categoryList, CategoryDto.class));
     }
+
+    @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
+    @GetMapping("/{id}")
+    @ApiOperation(value = "Find category by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get user category by id"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(categoryMapper.toDto(categoryService.findById(id)));
+    }
+
+
 
     @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
     @PostMapping

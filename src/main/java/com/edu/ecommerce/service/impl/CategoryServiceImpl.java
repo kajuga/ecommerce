@@ -1,11 +1,9 @@
 package com.edu.ecommerce.service.impl;
 
-import com.edu.ecommerce.exceptions.ResourceNotFoundException;
 import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.repository.CategoryRepository;
 import com.edu.ecommerce.service.interfaces.CategoryService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +18,6 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-   @Autowired
    private final CategoryRepository categoryRepository;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -37,7 +34,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public Category findById(Long id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id: %s not found!", id)));
+//        return Optional.of(id)
+//                .flatMap(categoryRepository::getCategoryById)
+//                .map()
+//
+//
+//        return categoryRepository.getCategoryById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id: %s not found!", id)));
+        return null;
     }
 
     @Override

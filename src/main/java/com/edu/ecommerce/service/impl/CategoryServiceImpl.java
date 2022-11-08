@@ -1,5 +1,6 @@
 package com.edu.ecommerce.service.impl;
 
+import com.edu.ecommerce.exceptions.ResourceNotFoundException;
 import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.repository.CategoryRepository;
 import com.edu.ecommerce.service.interfaces.CategoryService;
@@ -34,13 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public Category findById(Long id) {
-//        return Optional.of(id)
-//                .flatMap(categoryRepository::getCategoryById)
-//                .map()
-//
-//
-//        return categoryRepository.getCategoryById(id).orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id: %s not found!", id)));
-        return null;
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id: %s not found!", id)));
     }
 
     @Override

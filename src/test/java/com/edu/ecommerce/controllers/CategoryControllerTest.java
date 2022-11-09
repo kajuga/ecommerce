@@ -3,8 +3,8 @@ package com.edu.ecommerce.controllers;
 import com.edu.ecommerce.config.MvcTestConfiguration;
 import com.edu.ecommerce.configuration.SecurityConfig;
 import com.edu.ecommerce.dto.category.CategoryDto;
+import com.edu.ecommerce.mapper.CategoryMapper;
 import com.edu.ecommerce.model.Category;
-import com.edu.ecommerce.repository.CategoryRepository;
 import com.edu.ecommerce.service.interfaces.CategoryService;
 import com.edu.ecommerce.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,30 +25,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest
 @WithMockUser
 @WebMvcTest(
         controllers = CategoryController.class,
@@ -65,21 +53,24 @@ class CategoryControllerTest {
     private static final String BASE_REQUEST = "json/request/";
     private static final String BASE_RESPONSE = "json/response/";
 
+    private static final String REQUEST_CREATE_1 = BASE_REQUEST + "category_create_1.json";
+    private static final String RESPONSE_CREATE_1 = BASE_RESPONSE + "category_create_1.json";
+
     private static final String RESPONSE_GET_1 = BASE_RESPONSE + "categories_get_1.json";
     private static final String RESPONSE_GET_3 = BASE_RESPONSE + "categories_get_3.json";
+
+    private final CategoryMapper mapper = new CategoryMapper();
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    CategoryRepository categoryRepository;
-
     @MockBean
     CategoryService categoryService;
 
+
     @Test
     void getCategoriesTest() throws Exception {
-        final List<Category> response = TestUtil.readJsonResourceToList(RESPONSE_GET_3, Category.class);
+        final List<CategoryDto> response = TestUtil.readJsonResourceToList(RESPONSE_GET_3, CategoryDto.class);
         final String expected = TestUtil.write(response);
 
         doReturn(response).when(categoryService).findAll();
@@ -92,7 +83,6 @@ class CategoryControllerTest {
                 .andExpect(content().json(expected));
     }
 
-    @Disabled
     @Test
     void getCategoryByIdSuccessTest() throws Exception {
         final Category response = TestUtil.readJsonResource(RESPONSE_GET_1, Category.class);
@@ -100,56 +90,19 @@ class CategoryControllerTest {
 
         doReturn(response)
                 .when(categoryService)
-                .findById(eq(1L));
+                .findById(1L);
 
         this.mockMvc
-                .perform(get("category/{id}", 1L))
+                .perform(get("/category/{id}", 1L))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(expected));
     }
 
 
-
-
-
-
     @Test
-    void getCategoryBuIdExceptionTest() {
-
-
-
-    }
-
-
-
-
-@Disabled
-    @Test
-    void getCategories() throws Exception {
-        when(categoryRepository.findAll()).thenReturn(Arrays.asList(
-                new Category(1L, "Borsch", "Russian food", "http://borsch.jpg"),
-                new Category(2L, "Salo", "Ukrainian food", "http://salo.jpg"),
-                new Category(3L, "Hot dogs", "Korean food", "http://hot_dogs.jpg")
-        ));
-        mockMvc.perform(MockMvcRequestBuilders.get("/category"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[2].id", is(3)))
-                .andExpect(jsonPath("$[0].description", is("Russian food")))
-                .andExpect(jsonPath("$[1].categoryName", is("Salo")))
-                .andExpect(jsonPath("$[*].id",containsInAnyOrder(1,2,3)))
-                .andExpect(jsonPath("$[*].description", containsInAnyOrder("Russian food", "Korean food", "Ukrainian food")))
-                .andReturn();
-    }
-
-
-    @Disabled
-    @Test
-    void createCategory() throws Exception {
-        when(categoryRepository.save(Mockito.any(Category.class)))
+    void createCategoryTest() throws Exception {
+        when(categoryService.create(Mockito.any(Category.class)))
                 .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/category")
@@ -162,13 +115,41 @@ class CategoryControllerTest {
                             .andReturn();
     }
 
+
+//    @Test
+//    void createCategorySuccessTest() throws Exception {
+//        final CategoryDto request = TestUtil.readJsonResource(REQUEST_CREATE_1, CategoryDto.class);
+//        final CategoryDto response = TestUtil.readJsonResource(RESPONSE_CREATE_1, CategoryDto.class);
+//        final String expected = TestUtil.write(response);
+//
+//        final String expectedResult = TestUtil.write(response);
+//        doReturn(response)
+//                .when(categoryService)
+//                .create(request);
+//
+//        this.mockMvc
+//                .perform(post("/departmens")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(requestBytes)
+//                )
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().encoding(StandardCharsets.UTF_8))
+//                .andExpect(content().string(expected));
+//    }
+
+
+
+
+
+
     @Disabled
     @Test
     void updateCategory() throws Exception {
-        Mockito.when(categoryRepository.save(Mockito.any(Category.class)))
+        Mockito.when(categoryService.create(Mockito.any(Category.class)))
                 .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
-        Mockito.when(categoryRepository.findById(1L))
-                .thenReturn(java.util.Optional.of(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg")));
+        Mockito.when(categoryService.findById(1L))
+                .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/category/{id}", 1)
                         .with(csrf())
@@ -182,17 +163,19 @@ class CategoryControllerTest {
                             .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value("http://borsch.jpg"));
     }
 
-    @Test
-    void delete() throws Exception {
-        Category deletedCategory = new Category(1L, "Borsch", "Russian food", "http://borsch.jpg");
-        Mockito.when(categoryRepository.findById(1L))
-                .thenReturn(java.util.Optional.of(deletedCategory));
-        Mockito.doNothing().when(categoryRepository).delete(deletedCategory);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/category/{id}", 1)
-                .with(csrf()))
-                .andExpect(status().isOk());
-    }
+
+//    @Test
+//    void delete() throws Exception {
+//        Category deletedCategory = new Category(1L, "Borsch", "Russian food", "http://borsch.jpg");
+//        Mockito.when(categoryRepository.findById(1L))
+//                .thenReturn(java.util.Optional.of(deletedCategory));
+//        Mockito.doNothing().when(categoryRepository).delete(deletedCategory);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/category/{id}", 1)
+//                .with(csrf()))
+//                .andExpect(status().isOk());
+//    }
 
     static String asJsonString(final Object object) {
         try {

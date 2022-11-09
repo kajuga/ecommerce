@@ -30,19 +30,13 @@ class CartServiceImplTest {
 
     @Test
     public void testListCartItems() {
-        //Описание поведение моков
         Mockito.when(cartRepository.findAllByUserOrderByCreatedDateDesc(Mockito.any()))
                 .thenReturn(List.of(
                         Cart.builder().quantity(20).product(Product.builder().category(Category.builder().build()).price(220.56).build()).build(),
                         Cart.builder().quantity(30).product(Product.builder().category(Category.builder().build()).price(100.56).build()).build()
                 ));
-
-
-        // ТЕЛО ТЕСТА
         User user = new User();
-
         CartDto actualCartDto = cartService.listCartItems(user);
-
         CartDto expectedCartDto = CartDto.builder()
                 .cartItems(List.of(
                         CartItemDto.builder()

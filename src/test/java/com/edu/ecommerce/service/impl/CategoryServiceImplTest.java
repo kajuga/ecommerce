@@ -2,7 +2,6 @@ package com.edu.ecommerce.service.impl;
 
 import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.repository.CategoryRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +27,6 @@ class CategoryServiceImplTest {
     private CategoryRepository categoryRepository;
 
 
-    @Disabled
     @Test
     void findCategory_shouldCallRepository() {
         final Category category = mock(Category.class);
@@ -42,7 +40,6 @@ class CategoryServiceImplTest {
 
     }
 
-    @Disabled
     @Test
     void findCategoryById() {
         Category findedByIdCategory = new Category(667L, "Russian Food", "Nice russian borsch", "http://1820:80/image_borsch.jpg");

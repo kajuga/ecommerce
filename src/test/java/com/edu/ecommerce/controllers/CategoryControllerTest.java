@@ -8,7 +8,6 @@ import com.edu.ecommerce.model.Category;
 import com.edu.ecommerce.service.interfaces.CategoryService;
 import com.edu.ecommerce.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -27,9 +26,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -116,66 +118,54 @@ class CategoryControllerTest {
     }
 
 
-//    @Test
-//    void createCategorySuccessTest() throws Exception {
-//        final CategoryDto request = TestUtil.readJsonResource(REQUEST_CREATE_1, CategoryDto.class);
-//        final CategoryDto response = TestUtil.readJsonResource(RESPONSE_CREATE_1, CategoryDto.class);
-//        final String expected = TestUtil.write(response);
-//
-//        final String expectedResult = TestUtil.write(response);
-//        doReturn(response)
-//                .when(categoryService)
-//                .create(request);
-//
-//        this.mockMvc
-//                .perform(post("/departmens")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(requestBytes)
-//                )
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().encoding(StandardCharsets.UTF_8))
-//                .andExpect(content().string(expected));
-//    }
-
-
-
-
-
-
-    @Disabled
     @Test
-    void updateCategory() throws Exception {
-        Mockito.when(categoryService.create(Mockito.any(Category.class)))
-                .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
-        Mockito.when(categoryService.findById(1L))
-                .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
+    void createCategorySuccessTest() throws Exception {
+        final CategoryDto request = TestUtil.readJsonResource(REQUEST_CREATE_1, CategoryDto.class);
+        final CategoryDto response =TestUtil.readJsonResource(RESPONSE_CREATE_1, CategoryDto.class);
+        final String expected = asJsonString(response);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/category/{id}", 1)
+        doReturn(mapper.fromDto(response))
+                .when(categoryService)
+                .create(any(Category.class));
+
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.post("/category")
                         .with(csrf())
-                            .content(asJsonString(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg")))
-                            .contentType(MediaType.APPLICATION_JSON))
-                            .andDo(MockMvcResultHandlers.print())
+                        .content(asJsonString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(print())
+                .andExpect(content().string(expected))
+                .andExpect(status().isCreated());
 
-                            .andExpect(status().is2xxSuccessful())
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.categoryName").value("Borsch2"))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Russian food2"))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value("http://borsch.jpg"));
     }
 
+    @Test
+    void updateCategory() throws Exception {
 
+        Mockito.when(categoryService.update(eq(1L), Mockito.any(Category.class)))
+                .thenReturn(new Category(1L, "Borsch2", "Russian food2", "http://borsch.jpg"));
 
-//    @Test
-//    void delete() throws Exception {
-//        Category deletedCategory = new Category(1L, "Borsch", "Russian food", "http://borsch.jpg");
-//        Mockito.when(categoryRepository.findById(1L))
-//                .thenReturn(java.util.Optional.of(deletedCategory));
-//        Mockito.doNothing().when(categoryRepository).delete(deletedCategory);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/category/{id}", 1)
-//                .with(csrf()))
-//                .andExpect(status().isOk());
-//    }
+        mockMvc.perform(MockMvcRequestBuilders.put("/category/{id}", 1L)
+                        .with(csrf())
+                        .content(asJsonString(new CategoryDto(1L, "Borsch2", "Russian food2", "http://borsch.jpg")))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.categoryName").value("Borsch2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Russian food2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value("http://borsch.jpg"));
+    }
+
+    @Test
+    void delete() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/category/{id}", eq(1L))
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
 
     static String asJsonString(final Object object) {
         try {
@@ -184,5 +174,4 @@ class CategoryControllerTest {
             throw new RuntimeException(e);
         }
     }
-
 }

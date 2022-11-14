@@ -2,6 +2,7 @@ package com.edu.ecommerce.config;
 
 import com.edu.ecommerce.mapper.CategoryMapper;
 import com.edu.ecommerce.mapper.SignUpUserMapper;
+import com.edu.ecommerce.mapper.UserMapper;
 import com.edu.ecommerce.repository.*;
 import com.edu.ecommerce.security.AuthenticatedUser;
 import com.edu.ecommerce.service.impl.CategoryServiceImpl;
@@ -67,6 +68,10 @@ public class MvcTestConfiguration {
     public CategoryMapper categoryMapper() {
         return new CategoryMapper();
     }
+
+    @Bean
+    public UserMapper userMapper() {
+       return new UserMapper(roleServiceMock); }
 
     @Bean
     public UserService userService() {

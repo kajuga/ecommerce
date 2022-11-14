@@ -17,6 +17,7 @@ public class UserMapper {
         public User fromDto(UserDto userDto) {
         var role = roleService.findById(userDto.getRoleId());
         return User.builder()
+                .id(userDto.getId())
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .email(userDto.getEmail())

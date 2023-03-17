@@ -10,7 +10,7 @@ import com.edu.ecommerce.model.User;
 import java.util.List;
 
 /**
- * The service to the maintain operations with user.
+ * The com.edu.fileservice.service to the maintain operations with user.
  */
 public interface UserService {
 

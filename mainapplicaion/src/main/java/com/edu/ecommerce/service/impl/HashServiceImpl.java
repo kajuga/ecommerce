@@ -1,4 +1,4 @@
-//package com.edu.ecommerce.service.impl;
+//package com.edu.ecommerce.com.edu.fileservice.service.impl;
 //
 //import com.edu.ecommerce.configuration.MessageStrings;
 //import com.edu.ecommerce.exceptions.AuthenticationFailException;
@@ -6,9 +6,9 @@
 //import com.edu.ecommerce.model.Login;
 //import com.edu.ecommerce.model.User;
 //import com.edu.ecommerce.security.UserPrincipal;
-//import com.edu.ecommerce.service.interfaces.RoleService;
-//import com.edu.ecommerce.service.interfaces.TokenService;
-//import com.edu.ecommerce.service.interfaces.UserService;
+//import com.edu.ecommerce.com.edu.fileservice.service.interfaces.RoleService;
+//import com.edu.ecommerce.com.edu.fileservice.service.interfaces.TokenService;
+//import com.edu.ecommerce.com.edu.fileservice.service.interfaces.UserService;
 //import io.jsonwebtoken.Claims;
 //import io.jsonwebtoken.Jwts;
 //import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
-package com.edu.ecommerce.service.util.impl;
+package com.edu.fileservice.service.util.impl;
 
-import com.edu.ecommerce.exceptions.ResourceNotFoundException;
-import com.edu.ecommerce.model.File;
-import com.edu.ecommerce.service.util.interfaces.FileManager;
+import com.edu.fileservice.exceptions.ResourceNotFoundException;
+import com.edu.fileservice.model.File;
+import com.edu.fileservice.service.util.interfaces.FileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

@@ -61,7 +61,7 @@ public class OrderController {
 //        // retrieve user
 //        User user = authenticationService.getUser(token);
 //
-//        // 3. call getOrder method of order service an pass orderId and user
+//        // 3. call getOrder method of order com.edu.fileservice.service an pass orderId and user
 //
 //        Order order = orderService.getOrder(id, user);
 //

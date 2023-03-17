@@ -5,7 +5,7 @@ import com.edu.ecommerce.model.UserRole;
 import java.util.List;
 
 /**
- * The service to the maintain operations with user permission.
+ * The com.edu.fileservice.service to the maintain operations with user permission.
  */
 public interface RoleService {
 

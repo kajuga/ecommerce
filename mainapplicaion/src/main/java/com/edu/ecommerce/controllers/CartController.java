@@ -35,7 +35,7 @@ public class CartController {
         authenticationServiceImpl.authenticate(token);
         // get the user
         User user = authenticationServiceImpl.getUser(token);
-        // find the product to add and add item by service
+        // find the product to add and add item by com.edu.fileservice.service
         Product product = productService.findById(addToCartDto.getProductId());
         cartService.addToCart(addToCartDto, product, user);
 

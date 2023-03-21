@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      validCheckSum: ANY
+      id: 190320232011_initial_database_structure
+      author: a.fedorov
+      preConditions:
+        - onFail: HALT
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migrations/changes/V2003231043_create_database_structure.sql
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migrations/changes/V2103231205_fill_database_structure.sql

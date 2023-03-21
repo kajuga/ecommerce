@@ -2,8 +2,6 @@ package com.edu.fileservice.controllers;
 
 import com.edu.fileservice.model.File;
 import com.edu.fileservice.model.FileType;
-import com.edu.fileservice.model.Role;
-import com.edu.fileservice.security.AccessRole;
 import com.edu.fileservice.service.interfaces.FileService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,8 +24,6 @@ import java.util.List;
 @RequestMapping("/file")
 @RequiredArgsConstructor
 @CrossOrigin
-//@AccessRole(value = {Role.ADMINISTRATOR,
-//        Role.EXTERNAL, Role.MANAGER, Role.SPECIALIST})
 public class FileController {
 
     private final FileService fileService;

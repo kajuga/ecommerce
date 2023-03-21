@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemException;
 import java.util.List;
@@ -94,7 +95,7 @@ public class FileController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
-    public ResponseEntity<File> createFile(@RequestBody MultipartFile file, FileType type) throws FileSystemException {
+    public ResponseEntity<File> createFile(@RequestBody MultipartFile file, FileType type) throws IOException {
         var reqFile = fileService.uploadFile(file, type);
         return ResponseEntity.ok(reqFile);
     }

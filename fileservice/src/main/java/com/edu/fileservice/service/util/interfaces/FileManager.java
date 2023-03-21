@@ -18,7 +18,7 @@ public interface FileManager {
      * @param resource file for upload
      * @return method result message
      */
-    void upload(byte[] resource) throws FileSystemException;
+    void upload(byte[] resource, String filename) throws FileSystemException;
 
     /**
      * Download file by transmitted file entity

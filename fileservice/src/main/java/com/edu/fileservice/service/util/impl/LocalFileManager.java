@@ -4,6 +4,7 @@ import com.edu.fileservice.exceptions.ResourceNotFoundException;
 import com.edu.fileservice.model.File;
 import com.edu.fileservice.service.util.interfaces.FileManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
@@ -22,14 +23,18 @@ import java.nio.file.Paths;
 public class LocalFileManager implements FileManager {
 
 
-    private static final String DIRECTORY_PATH = "app-file-com.edu.fileservice.service/src/main/resources/fileStorage/";
+    private final String directoryPath;
+
+    public LocalFileManager(@Value("${file.storage.path}") String directoryPath) {
+        this.directoryPath = directoryPath;
+    };
 
     @Override
-    public void upload(byte[] resource) throws FileSystemException {
+    public void upload(byte[] resource, String filename) throws FileSystemException {
         log.info("Uploading file ");
-        var path = Paths.get(DIRECTORY_PATH);
+        var path = Paths.get(directoryPath + "\\" + filename );
         try {
-            Files.createDirectories(path.getParent());
+            //.createDirectories(path.getParent());
             Path file = Files.createFile(path);
             try (FileOutputStream stream = new FileOutputStream(file.toString())) {
                 stream.write(resource);
@@ -45,7 +50,7 @@ public class LocalFileManager implements FileManager {
     public Resource download(File file) {
         log.info("Downloading file :{}", file);
         try {
-            var path = Path.of(DIRECTORY_PATH + file.getName());
+            var path = Path.of(directoryPath + file.getName());
             var resource = new UrlResource(path.toUri());
             if (resource.exists() || resource.isReadable()) {
                 log.info("Downloading file :{} successful completed !!!", file);
@@ -62,7 +67,7 @@ public class LocalFileManager implements FileManager {
 
     @Override
     public void delete(File file) {
-        var path = Path.of(DIRECTORY_PATH + file.getName());
+        var path = Path.of(directoryPath + file.getName());
         log.info("Deleting file :{}", file);
         try {
             Files.delete(path);

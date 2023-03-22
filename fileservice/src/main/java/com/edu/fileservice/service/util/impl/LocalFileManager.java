@@ -50,7 +50,7 @@ public class LocalFileManager implements FileManager {
     public Resource download(File file) {
         log.info("Downloading file :{}", file);
         try {
-            var path = Path.of(directoryPath + file.getName());
+            var path = Path.of(directoryPath + "\\" + file.getName());
             var resource = new UrlResource(path.toUri());
             if (resource.exists() || resource.isReadable()) {
                 log.info("Downloading file :{} successful completed !!!", file);

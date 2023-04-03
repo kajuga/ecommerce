@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      validCheckSum: ANY
+      id: 3103231030_initial_database_structure
+      author: a.fedorov
+      preConditions:
+        - onFail: HALT
+      changes:
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migrations/changes/V3103231004_create_database_user_role_structure.sql
+        - sqlFile:
+            dbms: mysql
+            encoding: utf8
+            path: db/migrations/changes/V3103231007_fill_user_role_tables.sql

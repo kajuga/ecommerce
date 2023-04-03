@@ -50,5 +50,4 @@ public class UserDto {
     @Pattern(regexp = "[(?=.*\\d).{4}]+",
             message = "RoleId can contain only digits")
     private Long roleId;
-
 }

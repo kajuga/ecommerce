@@ -1,7 +1,5 @@
 package com.edu.userservice.service.impl;
 
-import com.edu.userservice.configuration.MessageStrings;
-import com.edu.userservice.dto.user.SignInResponseDto;
 import com.edu.userservice.dto.user.SignUpDto;
 import com.edu.userservice.dto.user.SignUpResponseDto;
 import com.edu.userservice.exceptions.ArgumentNotValidException;
@@ -9,7 +7,6 @@ import com.edu.userservice.exceptions.CrmException;
 import com.edu.userservice.exceptions.CustomException;
 import com.edu.userservice.exceptions.ResourceNotFoundException;
 import com.edu.userservice.mapper.SignUpUserMapper;
-import com.edu.userservice.model.AuthenticationToken;
 import com.edu.userservice.model.User;
 import com.edu.userservice.repository.RoleRepository;
 import com.edu.userservice.repository.UserRepository;
@@ -20,11 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -87,8 +81,6 @@ public class UserServiceImpl implements UserService {
             //TODO поправить на "искать по преффиксу"
             user.setUserRole(roleService.findById(1003L));
             userRepository.save(user);
-//            final AuthenticationToken authenticationToken = new AuthenticationToken(user);
-//            authenticationService.saveConfirmationToken(authenticationToken);
             return new SignUpResponseDto("success", "user created successfully");
         } catch (Exception e) {
             logger.error("Error creating user", e);
@@ -100,7 +92,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long id, User requestUser) {
         User userById = findById(id);
-//        checkUpdateAccess(userById, requestUser);
         String encryptedPassword = requestUser.getPassword();
         try {
             encryptedPassword = hashPassword(requestUser.getPassword());

@@ -28,8 +28,6 @@ import javax.validation.Valid;
 public class ExternalUserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
-    private final MapperFacade mapperFacade;
 
 
     @PostMapping("/signUp")

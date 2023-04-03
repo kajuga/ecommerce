@@ -1,7 +1,6 @@
 package com.edu.userservice.controllers;
 
 import com.edu.userservice.dto.role.RoleDto;
-import com.edu.userservice.model.Role;
 import com.edu.userservice.model.UserRole;
 import com.edu.userservice.service.interfaces.RoleService;
 import io.swagger.annotations.ApiOperation;

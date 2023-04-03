@@ -3,7 +3,6 @@ package com.edu.userservice.controllers;
 import com.edu.userservice.dto.role.RoleDto;
 import com.edu.userservice.dto.user.UserDto;
 import com.edu.userservice.mapper.UserMapper;
-import com.edu.userservice.model.Role;
 import com.edu.userservice.model.UserRole;
 import com.edu.userservice.security.UserPrincipal;
 import com.edu.userservice.service.interfaces.UserService;

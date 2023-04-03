@@ -2,21 +2,23 @@ package com.edu.ecommerce.controllers;
 
 import com.edu.ecommerce.dto.role.RoleDto;
 import com.edu.ecommerce.model.Role;
-import com.edu.ecommerce.model.UserRole;
 import com.edu.ecommerce.security.AccessRole;
-import com.edu.ecommerce.service.interfaces.RoleService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 @RestController
@@ -26,8 +28,13 @@ import java.util.List;
 @AccessRole(value = Role.ADMINISTRATOR)
 public class RoleController {
 
-    private final MapperFacade mapper;
-    private final RoleService roleService;
+    private final RestTemplate restTemplate;
+
+    @Autowired
+    public RoleController(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
+
 
     @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
     @GetMapping
@@ -39,8 +46,9 @@ public class RoleController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<List<RoleDto>> findAll() {
-        var userRoleList = roleService.findAll();
-        return ResponseEntity.ok(mapper.mapAsList(userRoleList, RoleDto.class));
+        ResponseEntity<RoleDto[]> responseEntity = restTemplate.getForEntity("http://localhost:8082/role", RoleDto[].class);
+        List<RoleDto> roles = Arrays.asList(Objects.requireNonNull(responseEntity.getBody()));
+        return ResponseEntity.ok(roles);
     }
 
     @AccessRole(value = {Role.MANAGER, Role.EXTERNAL, Role.SPECIALIST})
@@ -53,8 +61,7 @@ public class RoleController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<RoleDto> findById(@NotNull @PathVariable("id") Long id) {
-        UserRole roleById = roleService.findById(id);
-        return ResponseEntity.ok(mapper.map(roleById, RoleDto.class));
+        return restTemplate.getForEntity("http://localhost:8082/role/"+ id, RoleDto.class);
     }
 
     @AccessRole(value = {Role.MANAGER, Role.SPECIALIST})
@@ -67,8 +74,7 @@ public class RoleController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<RoleDto> create(@Valid @RequestBody RoleDto roleDto) {
-        UserRole userRole = roleService.create(mapper.map(roleDto, UserRole.class));
-        return new ResponseEntity<>(mapper.map(userRole, RoleDto.class), HttpStatus.CREATED);
+        return restTemplate.postForEntity("http://localhost:8082/role/", roleDto, RoleDto.class);
     }
 
     @AccessRole(value = {Role.MANAGER, Role.SPECIALIST})
@@ -81,10 +87,8 @@ public class RoleController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<RoleDto> update(@NotNull @PathVariable("id") Long id, @RequestBody RoleDto roleDto) {
-        UserRole mappedUserRole = mapper.map(roleDto, UserRole.class);
-        UserRole updatedUserRole = roleService.update(id, mappedUserRole);
-        return ResponseEntity.ok(mapper
-                .map(updatedUserRole, RoleDto.class));
+       restTemplate.put("http://localhost:8082/role/" + id, roleDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @AccessRole(value = {Role.MANAGER, Role.SPECIALIST})
@@ -97,7 +101,7 @@ public class RoleController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     })
     public ResponseEntity<Void> delete(@NotNull @PathVariable("id") Long id) {
-        roleService.delete(id);
+        restTemplate.delete("http://localhost:8082/role/" + id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
